@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Texas Life, Accident, Health & HMO Full Exam Simulator (145 Questions)</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --card-inner: #334155;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --border-color: #475569;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --correct-bg: #064e3b;
+      --correct-border: #10b981;
+      --correct-text: #a7f3d0;
+      --incorrect-bg: #7f1d1d;
+      --incorrect-border: #ef4444;
+      --incorrect-text: #fecaca;
+      --accent: #60a5fa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 24px 16px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 820px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Header & Tracking Bar */
+    header {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px 24px;
+      border: 1px solid var(--border-color);
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .meta-bar {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.92rem;
+      color: var(--text-sub);
+      margin-bottom: 12px;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 10px;
+      background: #0f172a;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #3b82f6, #10b981);
+      transition: width 0.3s ease;
+    }
+
+    /* Main Question Card */
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 28px;
+      border: 1px solid var(--border-color);
+    }
+
+    .category-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      background: rgba(96, 165, 250, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .question-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.55;
+      margin-bottom: 22px;
+    }
+
+    /* Options List */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: 14px 18px;
+      font-size: 0.98rem;
+      line-height: 1.45;
+      background: var(--card-inner);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: #475569;
+    }
+
+    .option-btn:disabled {
+      cursor: not-allowed;
+    }
+
+    .option-key {
+      font-weight: 700;
+      min-width: 22px;
+      color: var(--accent);
+    }
+
+    /* Result State Styling */
+    .option-btn.selected-correct {
+      background-color: var(--correct-bg) !important;
+      border-color: var(--correct-border) !important;
+      color: var(--correct-text) !important;
+      font-weight: 600;
+    }
+
+    .option-btn.selected-incorrect {
+      background-color: var(--incorrect-bg) !important;
+      border-color: var(--incorrect-border) !important;
+      color: var(--incorrect-text) !important;
+      font-weight: 600;
+    }
+
+    .option-btn.show-correct {
+      border-color: var(--correct-border) !important;
+      background-color: #064e3b !important;
+      color: var(--correct-text) !important;
+    }
+
+    /* Explanation Area */
+    .explanation-box {
+      display: none;
+      margin-top: 22px;
+      padding: 18px 20px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .explanation-box.correct {
+      background: rgba(6, 78, 59, 0.4);
+      border-left: 4px solid var(--correct-border);
+      color: var(--correct-text);
+    }
+
+    .explanation-box.incorrect {
+      background: rgba(127, 29, 29, 0.4);
+      border-left: 4px solid var(--incorrect-border);
+      color: var(--incorrect-text);
+    }
+
+    .explanation-box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.05rem;
+    }
+
+    /* Bottom Button Controls */
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+
+    .next-btn {
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+      transition: background 0.2s ease;
+    }
+
+    .next-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    /* Final Result Screen */
+    .result-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 24px;
+    }
+
+    .score-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      margin: 0 auto 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    .score-pass {
+      background: #059669;
+      border: 4px solid #10b981;
+    }
+
+    .score-fail {
+      background: #b91c1c;
+      border: 4px solid #ef4444;
+    }
+
+    .result-status {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .result-details {
+      color: var(--text-sub);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 28px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .restart-btn {
+      padding: 12px 32px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .restart-btn:hover {
+      background: var(--primary-hover);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Texas Life, Health & Annuity Exam Prep (145 Questions)</h1>
+      <div class="meta-bar">
+        <span id="question-progress">Question 1 of 145</span>
+        <span id="live-score">Score: 0/0 (0%)</span>
+      </div>
+      <div class="progress-container">
+        <div class="progress-fill" id="progress-bar"></div>
+      </div>
+    </header>
+
+    <!-- Question View -->
+    <main class="card" id="quiz-card">
+      <span class="category-badge" id="category-badge">Category</span>
+      <h2 class="question-title" id="question-text">Loading question...</h2>
+
+      <div class="options-list" id="options-container">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <div class="explanation-box" id="explanation-box">
+        <strong id="feedback-heading"></strong>
+        <p id="explanation-text"></p>
+      </div>
+
+      <div class="controls">
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question &rarr;</button>
+      </div>
+    </main>
+
+    <!-- Results Screen -->
+    <section class="card result-screen" id="result-screen">
+      <div class="score-circle" id="score-circle">0%</div>
+      <h2 class="result-status" id="result-status">Exam Results</h2>
+      <p class="result-details" id="result-details"></p>
+      <button class="restart-btn" onclick="restartQuiz()">Retake Exam (Restart)</button>
+    </section>
+  </div>
+
+  <script>
+    const questions = [
+      // Questions 1 - 10: Contract Law & General Concepts
+      {
+        category: "General Insurance Concepts & Contract Law",
+        question: "An applicant applies for a life insurance policy without submitting the initial premium. The producer delivers the policy three weeks later. What must the producer collect at the time of delivery before coverage becomes legally effective?",
+        options: [
+          "An endorsement from the Texas Department of Insurance",
+          "The full premium and a signed Statement of Good Health",
+          "A notarized insurable interest certification",
+          "An inspection receipt signed by the beneficiary"
+        ],
+        answer: 1,
+        explanation: "If a policy is issued without an initial premium, coverage is not effective until the producer delivers the policy, collects the premium, and obtains a signed Statement of Good Health verifying insurability."
+      },
+      {
+        category: "General Insurance Concepts & Contract Law",
+        question: "Under the doctrine of adhesion, if an insurance policy contains ambiguous language, how will a court interpret the contract in a legal dispute?",
+        options: [
+          "In favor of the insurer because they drafted the contract",
+          "In favor of the insured because the contract is written on a 'take-it-or-leave-it' basis",
+          "As null and void due to lack of mutual assent",
+          "By dividing the liability equally between both parties"
+        ],
+        answer: 1,
+        explanation: "Contracts of adhesion are drafted by one party (the insurer) without negotiation. Ambiguous language is strictly interpreted in favor of the insured."
+      },
+      {
+        category: "General Insurance Concepts & Contract Law",
+        question: "Which legal principle prevents an insurance company from denying a claim based on a right it previously surrendered or failed to enforce?",
+        options: [
+          "Indemnity",
+          "Estoppel",
+          "Warranty",
+          "Subrogation"
+        ],
+        answer: 1,
+        explanation: "Waiver is the voluntary surrender of a known right. Estoppel legally prevents the party from re-asserting that surrendered right after the other party has reasonably relied upon it."
+      },
+      {
+        category: "General Insurance Concepts & Contract Law",
+        question: "An insurance contract is classified as an aleatory contract because:",
+        options: [
+          "Only one party makes an enforceable promise",
+          "The terms are drafted exclusively by the insurer",
+          "The exchange of values between the parties is unequal",
+          "It relies on the utmost good faith of both parties"
+        ],
+        answer: 2,
+        explanation: "Aleatory contracts feature an unequal exchange of monetary value. An insured may pay small premiums and receive a massive payout, or pay for decades with no claims."
+      },
+      {
+        category: "General Insurance Concepts & Contract Law",
+        question: "At what point must insurable interest exist in a Life Insurance contract?",
+        options: [
+          "At the time of the insured's death",
+          "Continuously throughout the entire life of the policy",
+          "At the time of policy application and inception",
+          "When the beneficiary submits the final proof of loss"
+        ],
+        answer: 2,
+        explanation: "In life insurance, insurable interest must exist only at the time of application/inception. It does not need to exist when the insured passes away."
+      },
+      {
+        category: "General Insurance Concepts & Contract Law",
+        question: "Statements made by an applicant on an application for life or health insurance are legally considered to be:",
+        options: [
+          "Warranties",
+          "Representations",
+          "Guarantees",
+          "Unilateral promises"
+        ],
+        answer: 1,
+        explanation: "Under Texas Insurance Code, statements on an application are representations (statements believed to be true to the best of knowledge), not warranties (guaranteed absolute truths)."
+      },
+      {
+        category: "General Insurance Concepts & Contract Law",
+        question: "An agent provides misleading advice leading a client to believe elective cosmetic procedures are covered under their major medical policy. Which type of authority is at issue?",
+        options: [
+          "Express authority",
+          "Implied authority",
+          "Apparent authority",
+          "Inherent authority"
+        ],
+        answer: 2,
+        explanation: "Apparent authority occurs when actions or representations by an agent lead a reasonable third party to believe the agent possessed authority to bind the company."
+      },
+      {
+        category: "General Insurance Concepts & Contract Law",
+        question: "Which element of a valid legal contract is missing if an insurance application is completed by an individual who is legally intoxicated?",
+        options: [
+          "Competent parties",
+          "Legal purpose",
+          "Consideration",
+          "Offer and acceptance"
+        ],
+        answer: 0,
+        explanation: "To be binding, all parties must possess legal competence. Intoxication, minority, and severe mental impairment compromise legal capacity."
+      },
+      {
+        category: "General Insurance Concepts & Contract Law",
+        question: "In an insurance transaction, what constitutes the Consideration provided by the applicant?",
+        options: [
+          "The insurer's promise to pay claims",
+          "The completed application and initial premium payment",
+          "The underwriting risk assessment",
+          "The insurable interest acknowledgment"
+        ],
+        answer: 1,
+        explanation: "Consideration is the value given in exchange. The applicant provides the completed application plus the premium; the insurer provides the promise to pay covered losses."
+      },
+      {
+        category: "General Insurance Concepts & Contract Law",
+        question: "An agent issues a Conditional Receipt upon receiving an application and check. If the applicant dies in an accident two days later prior to policy delivery, what does the insurer do?",
+        options: [
+          "Return the premium and deny the claim because the policy was not delivered",
+          "Pay the death benefit if the applicant would have been approved as a standard risk on the receipt date",
+          "Pay 50% of the face amount as a settlement",
+          "Deny the claim automatically because underwriting was incomplete"
+        ],
+        answer: 1,
+        explanation: "Under a conditional receipt, coverage is effective as of the date of application or medical exam, provided the applicant was insurable under standard guidelines on that date."
+      },
+
+      // Questions 11 - 25: Life Policies & Riders
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "A 30-year-old client wants permanent life insurance but can only afford lower premiums now, expecting their salary to double in 5 years. Which policy fits best?",
+        options: [
+          "Continuous-Premium Whole Life",
+          "Modified Whole Life",
+          "20-Pay Life",
+          "Single Premium Life"
+        ],
+        answer: 1,
+        explanation: "Modified Whole Life starts with lower premiums for the first 3 to 5 years, then steps up to a permanent, fixed level premium for the remainder of life."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Which life insurance policy allows the policyowner to adjust death benefits, vary premiums, and skip payments as long as the cash value covers monthly deductions?",
+        options: [
+          "Variable Life",
+          "Universal Life",
+          "Decreasing Term Life",
+          "Industrial Life"
+        ],
+        answer: 1,
+        explanation: "Universal Life is a flexible-premium adjustable life policy allowing the owner to change death benefits, vary premium amounts, and skip payments if cash value covers deductions."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Under a 20-Pay Whole Life policy, when does the cash value equal the face amount (maturity)?",
+        options: [
+          "At the end of the 20-year payment period",
+          "At age 65",
+          "At age 100 or 121",
+          "Whenever total premiums paid equal the death benefit"
+        ],
+        answer: 2,
+        explanation: "A limited-pay policy condenses premium payments into a set time window (20 years), but maturity (cash value equaling face value) still occurs at age 100 or 121."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Which type of term life insurance is commonly used to cover a declining mortgage or commercial amortized loan?",
+        options: [
+          "Level Term",
+          "Increasing Term",
+          "Decreasing Term",
+          "Renewable Term"
+        ],
+        answer: 2,
+        explanation: "Decreasing Term insurance features a level premium while the death benefit decreases over time, mirroring the payoff of amortized debt."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "An insured holds a whole life policy with an Accidental Death Benefit (ADB) rider for $100,000. If the insured passes away from a heart attack, what will the policy pay?",
+        options: [
+          "The base policy face amount plus $100,000",
+          "The base policy face amount only",
+          "Double the base policy face amount",
+          "The cash surrender value only"
+        ],
+        answer: 1,
+        explanation: "ADB riders pay an additional benefit only if death is the direct result of an external accident. Death from natural medical causes (like a heart attack) pays only the base face amount."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "What rider guarantees that a life insurance policy will stay in force without premium payments if the insured becomes totally and permanently disabled?",
+        options: [
+          "Payor Benefit Rider",
+          "Guaranteed Insurability Rider",
+          "Waiver of Premium Rider",
+          "Accelerated Death Benefit Rider"
+        ],
+        answer: 2,
+        explanation: "The Waiver of Premium Rider waives ongoing premium payments during a period of qualified total disability, typically after a 6-month waiting period."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "A mother purchases a life policy on her 10-year-old child. Which rider waives premium payments if the mother dies or becomes disabled before the child reaches adulthood?",
+        options: [
+          "Waiver of Cost of Insurance",
+          "Payor Benefit Rider",
+          "Return of Premium Rider",
+          "Family Term Rider"
+        ],
+        answer: 1,
+        explanation: "The Payor Benefit rider waives premiums on a juvenile policy if the adult payor dies or becomes disabled, continuing until the child reaches a designated age (such as 21 or 25)."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Under the Guaranteed Insurability Rider (GIR), the policyowner can purchase additional insurance amounts:",
+        options: [
+          "At specified future dates or milestones without proving evidence of insurability",
+          "At any time by paying back premiums plus interest",
+          "Free of charge if diagnosed with a terminal illness",
+          "Equal to the accumulated cash value every five years"
+        ],
+        answer: 0,
+        explanation: "GIR allows the insured to purchase stated increments of permanent coverage at specific intervals (e.g., ages 25, 28, 31, 34) or life events without medical underwriting."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Under what circumstance does an Accelerated Death Benefit (Living Needs) Rider pay out?",
+        options: [
+          "Involuntary loss of employment",
+          "Qualifying terminal illness with a limited life expectancy (typically 12–24 months)",
+          "Reaching age 65",
+          "Exhaustion of regular unemployment insurance"
+        ],
+        answer: 1,
+        explanation: "Accelerated Death Benefit riders allow policyholders early, tax-free access to a portion of the death benefit if diagnosed with a terminal illness or catastrophic condition."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "A policyowner fails to pay their annual life insurance premium on the due date. Which provision keeps the coverage in force?",
+        options: [
+          "Incontestability Clause",
+          "Grace Period Provision",
+          "Reinstatement Clause",
+          "Entire Contract Clause"
+        ],
+        answer: 1,
+        explanation: "The Grace Period (typically 30 or 31 days) maintains policy coverage past the due date. If death occurs during this window, unpaid premiums are deducted from the payout."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "An insured borrows $15,000 against their whole life cash value. If the insured dies before repaying the loan, what is paid to the beneficiary?",
+        options: [
+          "Zero, because an unpaid loan cancels the contract",
+          "The full face amount, with the balance collected from the estate",
+          "The face amount minus the $15,000 loan balance and any accrued interest",
+          "The cash surrender value only"
+        ],
+        answer: 2,
+        explanation: "Policy loans are secured by the death benefit. Any outstanding balance plus interest is deducted from the gross death benefit payout."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Which of the following is NOT one of the three statutory Nonforfeiture Options?",
+        options: [
+          "Cash Surrender Value",
+          "Reduced Paid-Up Insurance",
+          "Extended Term Insurance",
+          "Paid-Up Additions"
+        ],
+        answer: 3,
+        explanation: "Paid-Up Additions is a Dividend Option. The three standard nonforfeiture options are Cash Surrender, Reduced Paid-Up, and Extended Term."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Under the Reduced Paid-Up nonforfeiture option, the policy's net cash value is used to purchase:",
+        options: [
+          "Term insurance for the original face amount for a temporary duration",
+          "A fully paid-up permanent policy with a reduced face amount for life",
+          "An immediate annuity",
+          "Variable equity sub-accounts"
+        ],
+        answer: 1,
+        explanation: "Reduced Paid-Up uses accumulated cash value as a single net premium to purchase a permanent policy of the same type, with a reduced face amount and no future premiums due."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Which Dividend Option allows a participating policyowner to use their annual dividend to purchase 1-year term insurance?",
+        options: [
+          "Accumulation at Interest",
+          "Paid-Up Additions",
+          "Fifth Dividend Option (One-Year Term)",
+          "Cash Option"
+        ],
+        answer: 2,
+        explanation: "The Fifth Dividend Option directs the insurer to use dividends to buy one-year term insurance, often up to the cash value amount."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "An applicant reports their age as 32 instead of 36 on an application and dies 5 years later. Under the Misstatement of Age Provision, what does the insurer do?",
+        options: [
+          "Void the contract and refund premiums",
+          "Deny the claim because of misrepresentation",
+          "Adjust the death benefit to the amount the actual premiums paid would have purchased at age 36",
+          "Pay the full face amount because the incontestable period expired"
+        ],
+        answer: 2,
+        explanation: "The Misstatement of Age and Gender provision is never restricted by the incontestable clause; the insurer adjusts benefits to match what the premiums would have bought at the true age."
+      },
+
+      // Questions 26 - 35: Annuities & Retirement Concepts
+      {
+        category: "Annuities & Retirement Concepts",
+        question: "During the accumulation phase of a non-qualified deferred annuity, how are investment earnings taxed?",
+        options: [
+          "Taxed annually as capital gains",
+          "Tax-deferred until distributed",
+          "Subject to a 10% penalty each year",
+          "100% tax-free upon withdrawal"
+        ],
+        answer: 1,
+        explanation: "Interest and earnings inside an annuity grow on a tax-deferred basis, meaning taxes are postponed until withdrawals or income payments begin."
+      },
+      {
+        category: "Annuities & Retirement Concepts",
+        question: "An annuitant selects a Life Income with 10-Year Period Certain option. If the annuitant dies 4 years into payouts, what happens to the remaining balance?",
+        options: [
+          "Payments cease immediately",
+          "The remaining 6 years of guaranteed payments are paid to the beneficiary",
+          "The beneficiary receives a lump-sum refund of all original principal",
+          "The insurer absorbs the remaining contract value"
+        ],
+        answer: 1,
+        explanation: "Under a Life with Period Certain payout, income is guaranteed for life or the chosen term. If death occurs within the period, the beneficiary receives the remainder of that term."
+      },
+      {
+        category: "Annuities & Retirement Concepts",
+        question: "Which annuity settlement option offers the highest monthly payout for a given principal, but ceases all payments upon death?",
+        options: [
+          "Joint and Survivor Life",
+          "Life with Cash Refund",
+          "Pure (Straight) Life",
+          "Installment Refund"
+        ],
+        answer: 2,
+        explanation: "Pure/Straight Life provides the highest periodic income because there are no refund provisions or survivor guarantees; payments terminate upon death."
+      },
+      {
+        category: "Annuities & Retirement Concepts",
+        question: "A 52-year-old withdraws $20,000 from a non-qualified annuity with $30,000 basis and $25,000 in interest earnings. What are the tax consequences?",
+        options: [
+          "Tax-free return of basis under FIFO rules",
+          "Taxable as ordinary income plus a 10% IRS early withdrawal penalty",
+          "Taxable as long-term capital gains without penalty",
+          "Only the 10% penalty applies"
+        ],
+        answer: 1,
+        explanation: "Non-qualified annuity withdrawals follow LIFO (Last-In, First-Out) taxation; earnings come out first and are taxed as ordinary income. Withdrawals before age 59½ incur an additional 10% IRS penalty."
+      },
+      {
+        category: "Annuities & Retirement Concepts",
+        question: "Which annuity credits interest linked to an outside benchmark (e.g., S&P 500) while offering a guaranteed floor against principal loss?",
+        options: [
+          "Variable Annuity",
+          "Fixed Indexed Annuity (FIA)",
+          "Immediate Straight Annuity",
+          "Market Value Adjusted Annuity"
+        ],
+        answer: 1,
+        explanation: "Fixed Indexed Annuities credit interest based on the performance of an underlying equity index, while protecting principal with a guaranteed minimum floor (often 0%)."
+      },
+      {
+        category: "Annuities & Retirement Concepts",
+        question: "What does the Participation Rate determine in an Equity Indexed Annuity?",
+        options: [
+          "The annual administrative fee percentage",
+          "The percentage of the external index's gain that is credited to the contract",
+          "The maximum deposit allowed per year",
+          "The penalty-free withdrawal limit"
+        ],
+        answer: 1,
+        explanation: "The participation rate establishes what percentage of the index's positive return is credited to the annuity (e.g., an 80% participation rate on a 10% gain yields an 8% credit)."
+      },
+      {
+        category: "Annuities & Retirement Concepts",
+        question: "What is the primary function of a Market Value Adjustment (MVA) in a fixed annuity?",
+        options: [
+          "To index returns to the NASDAQ",
+          "To adjust surrender values upward or downward based on prevailing interest rate movements",
+          "To eliminate early withdrawal taxes",
+          "To convert fixed accounts into variable sub-accounts"
+        ],
+        answer: 1,
+        explanation: "An MVA adjusts the surrender value if terminated early: if interest rates rose since purchase, the adjustment is negative; if rates fell, the adjustment is positive."
+      },
+      {
+        category: "Annuities & Retirement Concepts",
+        question: "Under Section 1035 of the Internal Revenue Code, which exchange is prohibited on a tax-free basis?",
+        options: [
+          "A Life Insurance policy for another Life Insurance policy",
+          "A Life Insurance policy for an Annuity",
+          "An Annuity for another Annuity",
+          "An Annuity for a Life Insurance policy"
+        ],
+        answer: 3,
+        explanation: "Under Section 1035, life insurance may be exchanged for life or an annuity, and an annuity may be exchanged for another annuity. An annuity cannot be exchanged tax-free for a life policy."
+      },
+      {
+        category: "Annuities & Retirement Concepts",
+        question: "Who bears the investment risk in a Variable Annuity?",
+        options: [
+          "The insurance company's general account",
+          "The Texas Department of Insurance",
+          "The annuity contract owner",
+          "The Guaranty Association"
+        ],
+        answer: 2,
+        explanation: "Variable annuities allocate funds into separate accounts invested in equities and bonds. The contract owner bears all underlying investment and market risk."
+      },
+      {
+        category: "Annuities & Retirement Concepts",
+        question: "Under a Traditional 401(k) or IRA, what is the tax status of contributions and distributions?",
+        options: [
+          "Contributions are after-tax; distributions are 100% tax-free",
+          "Contributions are pre-tax; distributions are 100% taxable as ordinary income",
+          "Contributions are non-deductible; only earnings are taxed",
+          "Both contributions and distributions are subject to capital gains"
+        ],
+        answer: 1,
+        explanation: "Qualified plans are funded with pre-tax dollars. Both principal and accumulated gains are taxed as ordinary income upon distribution."
+      },
+
+      // Questions 36 - 50: Health, Accident & Senior Products
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under the Own-Occupation definition of total disability, an insured qualifies for benefits if they:",
+        options: [
+          "Are unable to perform any job for which they are qualified by education and training",
+          "Cannot perform the substantial and material duties of their regular occupation",
+          "Suffer an income reduction of at least 10%",
+          "Are confined to a residential medical facility"
+        ],
+        answer: 1,
+        explanation: "Own-Occupation qualifies an insured for total disability benefits when they are unable to perform the core duties of their specific regular occupation, even if working elsewhere."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "What policy renewal provision guarantees that the insurer cannot cancel coverage, cannot alter terms, and cannot increase premiums?",
+        options: [
+          "Guaranteed Renewable",
+          "Non-Cancelable",
+          "Conditionally Renewable",
+          "Optionally Renewable"
+        ],
+        answer: 1,
+        explanation: "A Non-Cancelable policy locks in both coverage and premiums; the insurer cannot cancel, change provisions, or increase premium rates up to the specified age limit."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "In an individual Major Medical policy, what is the purpose of the Stop-Loss provision?",
+        options: [
+          "To cap the total lifetime payout of the insurance company",
+          "To establish a ceiling on the insured's annual out-of-pocket costs",
+          "To restrict claims during the first 30 policy days",
+          "To limit deductibles to $500 per incident"
+        ],
+        answer: 1,
+        explanation: "The Stop-Loss (Maximum Out-of-Pocket) provision caps the insured's cost-sharing in a year. After reaching this ceiling, the insurer pays 100% of covered expenses."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "How are disability benefits taxed if received by an individual under a policy where they paid 100% of the premiums with personal after-tax dollars?",
+        options: [
+          "100% taxable as ordinary income",
+          "100% income tax-free",
+          "Subject to a 10% IRS excise penalty",
+          "Taxable only if benefits exceed $5,000 monthly"
+        ],
+        answer: 1,
+        explanation: "When an individual pays disability premiums with after-tax dollars without taking a tax deduction, all received disability income benefits are completely tax-free."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "An employer pays 100% of the premiums for group disability insurance for employees. How are benefit payouts taxed to an employee?",
+        options: [
+          "Fully taxable as ordinary income",
+          "Completely income tax-free",
+          "Taxed at long-term capital gains rates",
+          "50% taxable and 50% tax-free"
+        ],
+        answer: 0,
+        explanation: "Because the employer deducted the premium payments as a business expense, any disability benefits received by the employee are fully taxable as income."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Which part of Medicare provides coverage for inpatient hospitalization, skilled nursing care, hospice, and home health care?",
+        options: [
+          "Medicare Part A",
+          "Medicare Part B",
+          "Medicare Part C",
+          "Medicare Part D"
+        ],
+        answer: 0,
+        explanation: "Medicare Part A is Hospital Insurance covering inpatient stays, skilled nursing, hospice, and qualifying home health services."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "To trigger benefit payouts under a tax-qualified Long-Term Care (LTC) policy, an insured must be unable to perform at least how many Activities of Daily Living (ADLs)?",
+        options: [
+          "1 out of 6",
+          "2 out of 6",
+          "4 out of 6",
+          "6 out of 6"
+        ],
+        answer: 1,
+        explanation: "Tax-qualified LTC policies require that an individual be unable to perform at least 2 of 6 standard ADLs (eating, bathing, dressing, toileting, transferring, continence) for at least 90 days."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "What is a primary operational distinction between an HMO and a PPO?",
+        options: [
+          "HMOs operate on an indemnity basis, while PPOs do not",
+          "HMOs use Primary Care Physician gatekeepers and closed networks; PPOs offer open access with out-of-network benefits at higher cost-sharing",
+          "PPOs are strictly government-administered",
+          "HMOs do not cover preventive care"
+        ],
+        answer: 1,
+        explanation: "HMOs rely on network physicians and Primary Care Physicians (gatekeepers) for specialist referrals. PPOs offer in- and out-of-network access without gatekeeper referrals."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under standard federal COBRA regulations, what is the continuation period for an employee terminated for reasons other than gross misconduct?",
+        options: [
+          "12 months",
+          "18 months",
+          "24 months",
+          "36 months"
+        ],
+        answer: 1,
+        explanation: "Termination of employment or reduction in hours allows up to 18 months of COBRA continuation coverage."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "What type of health plan is required for an individual to open and contribute to a Health Savings Account (HSA)?",
+        options: [
+          "A Medicare Supplement Plan",
+          "A High-Deductible Health Plan (HDHP)",
+          "A Basic Hospital Indemnity Policy",
+          "A Closed-Panel HMO"
+        ],
+        answer: 1,
+        explanation: "By federal law, individuals must be enrolled in an eligible High-Deductible Health Plan (HDHP) to open or contribute to an HSA."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under mandatory uniform health provisions, what is the standard deadline for submitting written Proof of Loss?",
+        options: [
+          "20 days",
+          "60 days",
+          "90 days",
+          "180 days"
+        ],
+        answer: 2,
+        explanation: "Written Proof of Loss must be furnished to the insurer within 90 days of the date of loss, or as soon as reasonably possible (not to exceed one year)."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "How long is the mandatory waiting period under the Legal Actions provision before an insured can file suit against an insurer after submitting written proof of loss?",
+        options: [
+          "30 days",
+          "60 days",
+          "90 days",
+          "120 days"
+        ],
+        answer: 1,
+        explanation: "The Legal Actions provision requires an insured to wait at least 60 days after submitting proof of loss before filing a lawsuit, and lawsuits cannot be initiated after 3 years."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "An insured omitted a history of gallstones on an application. Three years later, they file a claim for gallbladder surgery. Can the insurer deny the claim for misstatement?",
+        options: [
+          "Yes, because health policies can be rescinded at any time for omissions",
+          "No, because the 2-year Time Limit on Certain Defenses has passed",
+          "Yes, but only if the policy was notarized",
+          "No, provided surgery was performed as emergency care"
+        ],
+        answer: 1,
+        explanation: "Under the Time Limit on Certain Defenses provision, policies cannot be voided or claims denied for misstatements after 2 years from issue, barring intentional fraud."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "If an insurer requires a reinstatement application and issues a conditional receipt, within how many days is the policy automatically reinstated if not rejected?",
+        options: [
+          "10 days",
+          "30 days",
+          "45 days",
+          "60 days"
+        ],
+        answer: 2,
+        explanation: "If an insurer takes no action to approve or deny a reinstatement application within 45 days of issuing a conditional receipt, the policy is reinstated automatically."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Once a lapsed health insurance policy is reinstated, how are sickness and accident claims covered?",
+        options: [
+          "Accidents are covered immediately; sickness is covered after a 10-day waiting period",
+          "Both accidents and sickness are covered immediately",
+          "Sickness is covered immediately; accidents have a 30-day waiting period",
+          "Both are subject to a 45-day waiting period"
+        ],
+        answer: 0,
+        explanation: "Reinstated policies cover accidental injuries immediately, but impose a 10-day waiting period on illnesses to protect against adverse selection."
+      },
+
+      // Questions 51 - 65: Texas Statutes & Rules Part 1
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "The Texas Commissioner of Insurance is appointed by:",
+        options: [
+          "The Texas Senate for a 4-year term",
+          "The Governor of Texas for a 2-year term",
+          "Public election every 4 years",
+          "The National Association of Insurance Commissioners (NAIC)"
+        ],
+        answer: 1,
+        explanation: "The Texas Insurance Commissioner is appointed by the Governor for a 2-year term ending on February 1 of odd-numbered years, confirmed by the Senate."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "How frequently must the Texas Department of Insurance examine domestic insurers authorized in Texas?",
+        options: [
+          "At least once every year",
+          "At least once every 3 years",
+          "At least once every 5 years",
+          "Only upon consumer complaints"
+        ],
+        answer: 2,
+        explanation: "TDI is required to conduct financial examinations of all domestic insurance carriers at least once every 5 years."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "What is the maximum administrative penalty per violation TDI may impose on an insurer or agent for violating the Texas Insurance Code?",
+        options: [
+          "$5,000",
+          "$10,000",
+          "$25,000",
+          "$50,000"
+        ],
+        answer: 2,
+        explanation: "TDI may assess administrative penalties up to $25,000 per violation of Texas insurance laws, regulations, or orders."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "An agent must report a change of business address, residential address, or legal name to TDI within:",
+        options: [
+          "10 days",
+          "30 days",
+          "45 days",
+          "60 days"
+        ],
+        answer: 1,
+        explanation: "Texas licensees must notify the Texas Department of Insurance within 30 days of any change in residence, business mailing address, or legal name."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "What is the term length and renewal status of a Temporary License in Texas?",
+        options: [
+          "90 days, non-renewable",
+          "180 days, non-renewable",
+          "1 year, renewable once",
+          "2 years, renewable with CE"
+        ],
+        answer: 1,
+        explanation: "Temporary licenses in Texas are issued for up to 180 days and cannot be renewed."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "How many hours of Continuing Education (CE) must a Texas General Lines agent complete every 2 years, and how many must be in Ethics?",
+        options: [
+          "20 hours total, 2 in ethics",
+          "24 hours total, 3 in ethics",
+          "30 hours total, 2 in ethics",
+          "24 hours total, 4 in ethics"
+        ],
+        answer: 1,
+        explanation: "Texas agents must complete 24 hours of CE every 2-year license cycle, including at least 3 hours dedicated to Ethics/Consumer Protection."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under the Texas Prompt Payment of Claims Statute, within how many days must an insurer acknowledge receipt of a claim and request required items?",
+        options: [
+          "5 business days",
+          "10 calendar days",
+          "15 calendar days",
+          "30 calendar days"
+        ],
+        answer: 2,
+        explanation: "Insurers must acknowledge receipt of a claim, commence investigation, and request all required documentation within 15 calendar days."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "After receiving all requested documentation to verify a claim, within how many business days must the insurer accept or reject the claim?",
+        options: [
+          "5 business days",
+          "15 business days",
+          "30 calendar days",
+          "45 calendar days"
+        ],
+        answer: 1,
+        explanation: "Insurers must notify the claimant of claim acceptance or rejection in writing within 15 business days of receiving all requested forms and items."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Once an insurer approves a claim, within how many business days must the claim settlement payment be sent?",
+        options: [
+          "5 business days",
+          "10 business days",
+          "15 business days",
+          "30 calendar days"
+        ],
+        answer: 0,
+        explanation: "Once a claim is accepted, the insurer must issue payment within 5 business days."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "If an insurer fails to meet Prompt Payment deadlines and improperly delays payment, what annual statutory penalty interest rate is assessed?",
+        options: [
+          "10% per annum",
+          "12% per annum",
+          "18% per annum",
+          "24% per annum"
+        ],
+        answer: 2,
+        explanation: "Under Texas Insurance Code, an insurer that fails to comply with prompt payment deadlines is liable for the claim plus 18% per annum statutory interest and reasonable attorney fees."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Offering a prospective client a $200 gift card, a discount on premiums, or a portion of the agent's commission as an incentive to buy insurance is:",
+        options: [
+          "Twisting",
+          "Churning",
+          "Rebating",
+          "Defamation"
+        ],
+        answer: 2,
+        explanation: "Rebating is giving or offering any valuable consideration, cash, or credit not specified in the insurance contract as an inducement to purchase, and is illegal in Texas."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "An agent publishes false, derogatory remarks claiming a competitor is insolvent to drive away their business. This is an illegal practice called:",
+        options: [
+          "Twisting",
+          "Coercion",
+          "Defamation",
+          "Boycotting"
+        ],
+        answer: 2,
+        explanation: "Defamation is publishing or circulating any false, malicious, or derogatory statement calculated to injure an insurer or agent's business reputation."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "In Texas, what is the mandatory Free-Look period for Medicare Supplement and Long-Term Care policies?",
+        options: [
+          "10 days",
+          "15 days",
+          "20 days",
+          "30 days"
+        ],
+        answer: 3,
+        explanation: "While general life and health policies have a 10- or 15-day period, Texas mandates a 30-day Free-Look period for Medicare Supplement and LTC policies."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under Texas law, coverage for a newborn infant begins at:",
+        options: [
+          "30 days after birth, upon written application",
+          "The moment of birth, with notice and premium due within 31 days",
+          "The time the infant leaves the hospital",
+          "Immediately with no additional premium requirement"
+        ],
+        answer: 1,
+        explanation: "Texas law mandates coverage from the moment of birth (including congenital defects). The policyowner must notify the insurer and pay premiums within 31 days to continue coverage."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "What is the maximum liability protection provided by the Texas Life and Health Insurance Guaranty Association for life insurance death benefits?",
+        options: [
+          "$100,000",
+          "$250,000",
+          "$300,000",
+          "$500,000"
+        ],
+        answer: 2,
+        explanation: "The Texas Life and Health Insurance Guaranty Association protects up to $300,000 in life insurance death benefits per individual if an insurer becomes insolvent."
+      },
+
+      // Questions 66 - 90: Life Concepts, Settlement, Taxation & Underwriting
+      {
+        category: "Life Insurance Concepts & Contract Law",
+        question: "When an insured dies, the beneficiary elects to receive the death benefit in equal monthly installments for 20 years. Which settlement option was chosen?",
+        options: [
+          "Fixed Amount",
+          "Fixed Period (Period Certain)",
+          "Interest Only",
+          "Life Income with Refund"
+        ],
+        answer: 1,
+        explanation: "Under Fixed Period, proceeds are paid out in guaranteed installments over a specified duration (20 years) regardless of the dollar amount of each payment."
+      },
+      {
+        category: "Life Insurance Concepts & Contract Law",
+        question: "Under federal tax law, how are death benefit proceeds paid to a beneficiary in a lump sum typically treated?",
+        options: [
+          "Taxable as ordinary income",
+          "Taxable as short-term capital gains",
+          "Income tax-free",
+          "Subject to a 10% penalty tax"
+        ],
+        answer: 2,
+        explanation: "Lump-sum life insurance death benefits paid to a named beneficiary are generally received 100% free of federal income tax."
+      },
+      {
+        category: "Life Insurance Concepts & Contract Law",
+        question: "If a permanent life policy is classified as a Modified Endowment Contract (MEC) because it failed the 7-Pay Test, how are pre-death cash withdrawals taxed?",
+        options: [
+          "Tax-free return of basis under FIFO rules",
+          "LIFO (Last-In, First-Out) taxation of gains first, plus a possible 10% penalty if under age 59½",
+          "Capital gains tax rates only",
+          "Taxed only upon policy surrender at age 100"
+        ],
+        answer: 1,
+        explanation: "Once a policy becomes a MEC, withdrawals are taxed on a LIFO basis (earnings out first as ordinary income) and face a 10% IRS penalty if taken before age 59½."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "An employer establishes an Executive Bonus Plan (Section 162) for a key employee. Who owns the policy and who pays the premium?",
+        options: [
+          "The employer owns the policy and pays the premium",
+          "The employee owns the policy; the employer pays the premium as a deductible bonus",
+          "The insurer owns the policy; the employee pays the premium",
+          "Ownership is split 50/50 between employer and employee"
+        ],
+        answer: 1,
+        explanation: "In an Executive Bonus Plan, the employee owns the policy and designates the beneficiary. The employer pays premiums as tax-deductible compensation."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "In a Key Person Life Insurance arrangement, what role does the business entity serve?",
+        options: [
+          "Applicant, policyowner, premium payor, and beneficiary",
+          "Beneficiary only, with the insured owning the policy",
+          "Premium payor only, with the state acting as trustee",
+          "Agent of record"
+        ],
+        answer: 0,
+        explanation: "In Key Person life insurance, the employer/business is the applicant, owner, premium payor, and beneficiary to offset financial losses from losing key personnel."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Three equal business partners want to fund a Cross-Purchase Buy-Sell Agreement using life insurance. How many total policies must be purchased?",
+        options: [
+          "3",
+          "6",
+          "9",
+          "12"
+        ],
+        answer: 1,
+        explanation: "The formula is N x (N - 1). For 3 partners: 3 x (3 - 1) = 6 policies. Each partner buys a policy on the other two."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Under a Group Life Insurance plan, what legal document is issued to the sponsoring employer versus the individual participating employees?",
+        options: [
+          "Employees receive the Master Policy; the employer receives Certificates of Insurance",
+          "The employer receives the Master Policy; employees receive Certificates of Insurance",
+          "Both receive identical individual policies",
+          "Neither receives a policy; the plan is held in state trust"
+        ],
+        answer: 1,
+        explanation: "In group insurance, the employer holds the Master Contract, while employees receive Certificates of Insurance outlining their benefits."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "An employee covered under an employer group life plan resigns. Under the standard Conversion Privilege, the employee may convert to an individual policy:",
+        options: [
+          "Within 31 days without evidence of insurability into a permanent policy",
+          "Within 60 days by submitting proof of good health",
+          "Into a term life policy at group rates",
+          "Only if the employer approves the conversion request"
+        ],
+        answer: 0,
+        explanation: "Employees leaving group coverage have 31 days to convert into an individual permanent cash value policy without medical underwriting."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "If a terminated employee dies 22 days after leaving their job without having submitted an application for an individual converted policy, what will the group insurer do?",
+        options: [
+          "Deny the claim because the employee is no longer employed",
+          "Pay the full death benefit under the 31-day conversion grace period",
+          "Refund the employee's past payroll deductions",
+          "Pay 50% of the benefit as a courtesy settlement"
+        ],
+        answer: 1,
+        explanation: "If death occurs during the statutory 31-day conversion window, the full death benefit must be paid regardless of whether application was filed."
+      },
+      {
+        category: "Life Insurance Concepts & Contract Law",
+        question: "Which statement regarding the Medical Information Bureau (MIB) is accurate?",
+        options: [
+          "It stores complete medical records and doctor visit notes",
+          "Insurers can decline an applicant solely based on an MIB report",
+          "It is a non-profit trade association that shares adverse medical codes between member insurers",
+          "It sets mandatory underwriting rates for Texas carriers"
+        ],
+        answer: 2,
+        explanation: "The MIB is an information cooperative that flags adverse medical information. Insurers cannot decline applicants solely on MIB findings without investigation."
+      },
+      {
+        category: "Life Insurance Concepts & Contract Law",
+        question: "Under the Fair Credit Reporting Act (FCRA), an applicant must be notified that an Investigative Consumer Report may be ordered:",
+        options: [
+          "In writing, within 3 days of requesting the report",
+          "Orally at the time of claim filing",
+          "Only if the applicant has poor credit scores",
+          "Within 30 days after the policy is delivered"
+        ],
+        answer: 0,
+        explanation: "Under the FCRA, an applicant must receive written notice of an Investigative Consumer Report no later than 3 days after the report is requested."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "A client purchases an Adjustable Life policy. Which of the following features can the policyowner modify over time?",
+        options: [
+          "The face amount, premium payment period, and length of protection",
+          "The investment equity sub-accounts",
+          "The state insurance tax deductions",
+          "The insurer's general mortality table"
+        ],
+        answer: 0,
+        explanation: "Adjustable Life allows the owner to change the face amount, alter premium amounts, and lengthen or shorten the protection period."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "What happens to a Joint Life (First-to-Die) policy when one of the two insured individuals passes away?",
+        options: [
+          "It doubles the benefit and continues covering the survivor",
+          "It pays the death benefit upon the first death, and the policy terminates",
+          "It pays no benefit until both insureds have died",
+          "It converts automatically into two separate term policies"
+        ],
+        answer: 1,
+        explanation: "A First-to-Die Joint Life policy pays the death benefit upon the death of the first insured person, after which the policy terminates."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Which policy type is commonly written to fund estate taxes for wealthy married couples because it pays proceeds only after both spouses have passed away?",
+        options: [
+          "Joint Life (First-to-Die)",
+          "Survivorship Life (Second-to-Die)",
+          "Graded Premium Life",
+          "Family Maintenance Policy"
+        ],
+        answer: 1,
+        explanation: "Survivorship Life (Second-to-Die) pays the death benefit upon the death of the last surviving spouse, commonly used for estate liquidity."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Under an Equity-Indexed Universal Life policy, what protection prevents the policy's cash value from decreasing during severe stock market downturns?",
+        options: [
+          "The corridor factor",
+          "The guaranteed minimum interest rate floor (typically 0%)",
+          "The participation cap",
+          "The FINRA reserve guarantee"
+        ],
+        answer: 1,
+        explanation: "Indexed Universal Life contracts feature a minimum interest rate floor (usually 0%), protecting cash value from losing principal during market drops."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "A policyowner names their spouse as Primary Beneficiary and child as Contingent Beneficiary. Both die together in an auto accident with no survival proof. How are proceeds paid?",
+        options: [
+          "The proceeds go to the primary beneficiary's estate",
+          "The policy proceeds are assumed to have passed to the contingent beneficiary as if the primary beneficiary died first",
+          "The proceeds escheat directly to the State of Texas",
+          "The insurer splits proceeds 50/50 between both estates"
+        ],
+        answer: 1,
+        explanation: "Under the Uniform Simultaneous Death Act, it is legally presumed the primary beneficiary predeceased the insured, allowing funds to bypass probate and pass to the contingent."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "A revocable beneficiary on a life insurance policy:",
+        options: [
+          "Has a vested legal interest that cannot be removed without their written consent",
+          "Can be changed at any time by the policyowner without their knowledge or consent",
+          "Is entitled to take policy loans against the cash value",
+          "Must co-sign any surrender documents"
+        ],
+        answer: 1,
+        explanation: "A revocable beneficiary has no vested property rights. The policyowner retains complete authority to change them at any time."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Which life insurance settlement option preserves the full principal sum while paying the beneficiary recurring periodic income derived exclusively from earned interest?",
+        options: [
+          "Fixed Amount",
+          "Fixed Period",
+          "Interest Only",
+          "Life Income with Cash Refund"
+        ],
+        answer: 2,
+        explanation: "Under Interest Only, the insurer retains the principal sum and pays regular interest checks to the beneficiary, keeping the underlying principal intact."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "A policyowner transfers all rights, titles, and legal interests in a life insurance policy permanently to a financial trust. What type of assignment is this?",
+        options: [
+          "Collateral Assignment",
+          "Absolute Assignment",
+          "Revocable Assignment",
+          "Conditional Assignment"
+        ],
+        answer: 1,
+        explanation: "An Absolute Assignment transfers all rights, ownership, and incidents of ownership in the contract permanently to another entity."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Under the Entire Contract Provision, what items comprise the complete legally binding life insurance contract?",
+        options: [
+          "The policy document and the original signed application (including any attached riders)",
+          "The policy document and the agent's sales illustrations",
+          "The policy, application, and MIB report",
+          "The binder, conditional receipt, and billing statement"
+        ],
+        answer: 0,
+        explanation: "The Entire Contract includes the policy itself, attached riders, and a copy of the original signed application."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Under the Automatic Premium Loan (APL) provision, where does the money come from to pay an overdue premium if the policyowner misses the grace period?",
+        options: [
+          "The insurer's surplus fund",
+          "The policy's accumulated cash value",
+          "The beneficiary's collateral reserve",
+          "State Guaranty Association advances"
+        ],
+        answer: 1,
+        explanation: "APL automatically draws from the cash value as a policy loan to pay overdue premiums before the grace period ends, preventing unintentional lapses."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "An insured reinstates a lapsed Whole Life policy. Which of the following is typically required?",
+        options: [
+          "Paying back all overdue premiums with interest and providing evidence of insurability",
+          "Paying a 15% state reinstatement tax",
+          "Waiting until age 65",
+          "Surrendering all accumulated cash values"
+        ],
+        answer: 0,
+        explanation: "Reinstating a lapsed policy requires providing proof of insurability, paying all back premiums plus interest, and settling any outstanding loan balances."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "What happens to a term life policy that includes a Renewable Provision when the initial level term period expires?",
+        options: [
+          "Coverage continues without proof of insurability, with premiums adjusted based on attained age",
+          "Coverage automatically converts to whole life at the original issue-age rate",
+          "The policy requires a full physical exam to verify insurability",
+          "Premiums remain unchanged for the next term period"
+        ],
+        answer: 0,
+        explanation: "A Renewable provision allows extending coverage without medical underwriting, but premiums adjust upward based on the insured's attained age."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "Under a Convertible Provision in a term life policy, the insured can:",
+        options: [
+          "Exchange the term policy for a permanent policy without submitting proof of insurability",
+          "Convert the life policy into long-term care insurance",
+          "Cash out 100% of the paid premiums",
+          "Sell the policy directly to the Texas Department of Insurance"
+        ],
+        answer: 0,
+        explanation: "A Convertible provision grants the contractual right to convert a term policy into permanent cash value coverage without evidence of insurability."
+      },
+      {
+        category: "Life Insurance Policies & Riders",
+        question: "How are employer-paid group life insurance premiums for coverage amounts over $50,000 treated for an employee's federal income taxes?",
+        options: [
+          "100% tax-exempt",
+          "The cost of coverage exceeding $50,000 is taxable income to the employee (imputed income)",
+          "Subject to a 20% federal withholding penalty",
+          "Fully deductible by the employee on Schedule A"
+        ],
+        answer: 1,
+        explanation: "Under IRS Section 79, employer-provided group life over $50,000 generates taxable imputed income to the employee based on IRS Table I rates."
+      },
+
+      // Questions 91 - 115: Health, Disability, Senior & Managed Care
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under a Residual Disability rider, how are benefits determined when an insured returns to work on a part-time basis following a disabling event?",
+        options: [
+          "Full benefits are paid for a maximum of 6 months",
+          "Benefits are paid in proportion to the percentage of income lost",
+          "All disability payments stop immediately upon returning to any work",
+          "Benefits are capped at the flat state minimum wage"
+        ],
+        answer: 1,
+        explanation: "Residual Disability pays a proportional benefit based on the percentage of income lost when working part-time after total disability."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under a Presumptive Disability provision, an insured automatically qualifies for total disability benefits without ongoing medical proof of loss if they suffer:",
+        options: [
+          "Total and permanent blindness, loss of two limbs, or total loss of speech or hearing",
+          "A broken wrist requiring surgical intervention",
+          "A temporary illness lasting longer than 30 days",
+          "An injury causing an income drop of 20%"
+        ],
+        answer: 0,
+        explanation: "Presumptive Disability waives periodic medical verification if catastrophic loss occurs: blindness, loss of speech/hearing, or loss of any two limbs."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Which of the following is considered an Activity of Daily Living (ADL) under standard Long-Term Care policies?",
+        options: [
+          "Driving a motor vehicle",
+          "Balancing a personal checkbook",
+          "Transferring (moving into or out of a bed, chair, or wheelchair)",
+          "Preparing hot meals"
+        ],
+        answer: 2,
+        explanation: "The six ADLs are Bathing, Dressing, Toileting, Transferring, Continence, and Eating. Driving and meal preparation are considered IADLs."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "In a standard Medicare Supplement (Medigap) policy, what is the mandatory Open Enrollment window?",
+        options: [
+          "30 days before turning age 65",
+          "6 months beginning the first month an individual is both age 65 and enrolled in Medicare Part B",
+          "1 year following retirement from full-time employment",
+          "The month of December each calendar year"
+        ],
+        answer: 1,
+        explanation: "The federal Medigap Open Enrollment Period lasts 6 months starting the first month an individual is both 65 or older and enrolled in Part B."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Which core benefit is included in all standard Medicare Supplement plans (Plans A through N)?",
+        options: [
+          "100% of the Medicare Part A deductible",
+          "Medicare Part A coinsurance for hospital days 61 through 90, plus 365 lifetime additional days",
+          "Routine dental and vision examinations",
+          "Prescription drug copayments"
+        ],
+        answer: 1,
+        explanation: "Core Plan A benefits (in all Medigap plans) cover Part A hospital coinsurance for days 61-90 and 365 additional lifetime reserve hospital days."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under standard group health insurance rules, what does the Coordination of Benefits (COB) provision prevent?",
+        options: [
+          "Insurers from charging deductibles",
+          "Overinsurance and duplicate payments exceeding 100% of allowable medical expenses",
+          "Employees from dropping dependent coverage",
+          "Pre-existing condition exclusions"
+        ],
+        answer: 1,
+        explanation: "COB determines primary vs. secondary payor when covered by multiple plans, ensuring combined payouts do not exceed 100% of expenses."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under the Birthday Rule used in Coordination of Benefits for dependent children, which parent's insurance plan is primary?",
+        options: [
+          "The plan of the parent whose birthday falls earliest in the calendar year",
+          "The plan of the oldest parent",
+          "The plan of the parent who earns the higher annual salary",
+          "The plan that has been in force the longest"
+        ],
+        answer: 0,
+        explanation: "Under the Birthday Rule, primary coverage for dependent children is dictated by whichever parent's birthday occurs earliest in the calendar year."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Which type of health plan combines high deductibles with a tax-advantaged account that allows unspent balances to roll over year after year?",
+        options: [
+          "Flexible Spending Account (FSA)",
+          "Health Savings Account (HSA) paired with an HDHP",
+          "Basic Medical Expense Plan",
+          "Medicare Advantage Part C"
+        ],
+        answer: 1,
+        explanation: "HSAs pair with HDHPs. Funds grow tax-free, and unspent balances roll over indefinitely without 'use-it-or-lose-it' rules."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "What is the primary characteristic of an Exclusive Provider Organization (EPO)?",
+        options: [
+          "Complete freedom to visit any physician without referral, with full reimbursement",
+          "In-network care only; out-of-network services are not covered except in medical emergencies",
+          "Automatic enrollment for all Medicaid beneficiaries",
+          "Unlimited coverage for alternative experimental medicine"
+        ],
+        answer: 1,
+        explanation: "EPOs cover in-network care only (except emergencies), but do not require Primary Care Physician gatekeeper referrals for specialists."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under the Affordable Care Act (ACA), dependent children are permitted to stay covered on their parents' group health plan up to what age?",
+        options: [
+          "Age 19, or 23 if enrolled in college",
+          "Age 21",
+          "Age 26",
+          "Age 30"
+        ],
+        answer: 2,
+        explanation: "The ACA requires plans providing dependent coverage to cover adult children up to age 26, regardless of financial, marital, or student status."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Which of the following is considered an Essential Health Benefit (EHB) under the ACA?",
+        options: [
+          "Elective cosmetic enhancement",
+          "Adult cosmetic orthodontia",
+          "Maternity and newborn care",
+          "Private nursing home suites"
+        ],
+        answer: 2,
+        explanation: "Maternity and newborn care is one of the 10 statutory Essential Health Benefit categories mandated by the ACA."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under HIPAA and ACA provisions, a health insurance plan cannot exclude or limit coverage based on:",
+        options: [
+          "Pre-existing health conditions",
+          "Tobacco usage rates",
+          "The applicant's age",
+          "The geographic rating territory"
+        ],
+        answer: 0,
+        explanation: "Under the ACA, carriers cannot deny coverage or charge higher premiums based on pre-existing physical or mental health conditions."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under the Change of Beneficiary Provision in a health policy, who holds the legal right to change the beneficiary designation on a revocable contract?",
+        options: [
+          "The primary beneficiary",
+          "The policyowner",
+          "The attending physician",
+          "The state insurance commissioner"
+        ],
+        answer: 1,
+        explanation: "The policyowner has the exclusive legal right to change a revocable beneficiary without obtaining consent."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "An insured files an accident claim. The insurer sends out claim forms 18 days after receiving notice of claim. Under the standard Claim Forms Provision, what can the insured do?",
+        options: [
+          "Sue the company for bad faith immediately",
+          "Submit written proof of loss describing the nature and extent of the loss on regular paper",
+          "Request double damages",
+          "Void the insurance policy"
+        ],
+        answer: 1,
+        explanation: "If the insurer fails to provide claim forms within 15 days of notice, the insured satisfies proof-of-loss requirements by submitting written details on ordinary paper."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under the Notice of Claim Provision, how soon must an insured provide written notice of injury or illness to the insurer?",
+        options: [
+          "Within 10 days",
+          "Within 20 days of the loss, or as soon as reasonably possible",
+          "Within 60 days",
+          "Within 90 days"
+        ],
+        answer: 1,
+        explanation: "The Notice of Claim provision requires written notice of loss to be given within 20 days, or as soon thereafter as reasonably practical."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "What is the effect of the Payment of Claims Provision in an individual health policy?",
+        options: [
+          "It specifies that benefits are paid to the policyowner, or directly to medical providers if assigned",
+          "It fixes claims payments to 50% cash and 50% credits",
+          "It mandates that all claims must be arbitrated in municipal court",
+          "It releases the insurer from liability after 10 days"
+        ],
+        answer: 0,
+        explanation: "Payment of Claims specifies benefits will be paid to the insured, or directly to doctors/hospitals if an assignment of benefits was executed."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under the Physical Exam and Autopsy Provision, who bears the expense of medical exams or an autopsy required during a claim evaluation?",
+        options: [
+          "The insured or the insured's estate",
+          "The insurer",
+          "Split 50/50 between claimant and carrier",
+          "The Texas Department of Insurance"
+        ],
+        answer: 1,
+        explanation: "The insurer has the right to conduct independent examinations or autopsies at its own expense during claim reviews."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under the Change of Occupation Provision, what occurs if an insured changes to a more hazardous occupation without notifying the insurer and is later injured?",
+        options: [
+          "The claim is denied in full",
+          "Benefits are adjusted down to what the premium paid would have purchased at the hazardous rate",
+          "The insurer cancels the policy retroactively",
+          "Full benefits are paid, but a $1,000 fine is assessed"
+        ],
+        answer: 1,
+        explanation: "If switching to a more hazardous job, benefits are reduced to what paid premiums would have purchased for the higher-risk category."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "What is the standard Medicare Part B coinsurance percentage paid by the beneficiary after satisfying the annual deductible?",
+        options: [
+          "10%",
+          "20%",
+          "30%",
+          "40%"
+        ],
+        answer: 1,
+        explanation: "Under Medicare Part B, after satisfying the annual deductible, Medicare covers 80% of approved charges and the beneficiary pays 20% coinsurance."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "What type of Long-Term Care service provides temporary relief to a primary family caregiver?",
+        options: [
+          "Custodial Care",
+          "Respite Care",
+          "Intermediate Care",
+          "Home Health Care"
+        ],
+        answer: 1,
+        explanation: "Respite Care offers short-term care to a patient to give an unpaid primary family caregiver a temporary break."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "Under COBRA, what percentage of the group health premium can an employer charge a former employee for continuation coverage?",
+        options: [
+          "100%",
+          "102% (the full premium plus a 2% administrative fee)",
+          "115%",
+          "150%"
+        ],
+        answer: 1,
+        explanation: "Under COBRA, employers can charge the full group premium plus a 2% administrative fee, totaling 102%."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "How are individual, non-reimbursed medical expenses treated for personal income tax deduction purposes?",
+        options: [
+          "Deductible dollar-for-dollar without limit",
+          "Deductible only to the extent that unreimbursed qualified medical expenses exceed 7.5% of Adjusted Gross Income (AGI)",
+          "Deductible only if the taxpayer earns under $30,000",
+          "They are never deductible under federal tax law"
+        ],
+        answer: 1,
+        explanation: "Taxpayers who itemize can deduct qualified unreimbursed medical expenses that exceed 7.5% of their AGI."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "What is the primary benefit of a Disability Buy-Out Policy?",
+        options: [
+          "It pays the disabled partner's personal home mortgage",
+          "It provides cash to allow healthy business partners to purchase the disabled partner's ownership interest",
+          "It funds company payroll during economic slumps",
+          "It pays medical claims for executive officers"
+        ],
+        answer: 1,
+        explanation: "Disability Buy-Out policies provide capital to enable healthy business partners to buy out the equity of a totally disabled partner."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "In a Business Overhead Expense (BOE) policy, how are premiums and benefits treated for tax purposes?",
+        options: [
+          "Premiums are tax-deductible as a business expense; benefits are taxable income upon receipt",
+          "Premiums are non-deductible; benefits are tax-free",
+          "Both premiums and benefits are completely tax-free",
+          "Benefits are subject to a 25% federal payroll tax"
+        ],
+        answer: 0,
+        explanation: "BOE premiums are a deductible business expense; therefore, benefits received are treated as taxable income (used to pay deductible overhead expenses)."
+      },
+      {
+        category: "Health, Accident, Disability & Senior Products",
+        question: "What is the purpose of an Impairment (Exclusion) Rider attached to an individual health insurance policy?",
+        options: [
+          "It increases coverage limits for specific dread diseases",
+          "It excludes coverage for a specific pre-existing condition or body part to allow the policy to be issued",
+          "It waives all future premium payments automatically",
+          "It doubles the deductible across all illnesses"
+        ],
+        answer: 1,
+        explanation: "Impairment riders exclude coverage for specific conditions or body parts, allowing otherwise uninsurable applicants to obtain protection for other risks."
+      },
+
+      // Questions 116 - 145: Texas Statutes, Rules & Licensing Regulations Part 2
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Which entity is responsible for administering and enforcing insurance laws in the State of Texas?",
+        options: [
+          "The National Association of Insurance Commissioners (NAIC)",
+          "The Texas Department of Insurance (TDI)",
+          "The Texas State Board of Underwriters",
+          "The Federal Insurance Office (FIO)"
+        ],
+        answer: 1,
+        explanation: "The Texas Department of Insurance (TDI), headed by the Commissioner of Insurance, enforces the Texas Insurance Code."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under Texas law, an agent must keep detailed records of all insurance transactions for a minimum of:",
+        options: [
+          "1 year",
+          "3 years",
+          "5 years",
+          "7 years"
+        ],
+        answer: 2,
+        explanation: "Under Texas regulations, producers must maintain transaction and policy records for at least 5 years."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "What is the minimum age required to obtain an insurance agent license in the State of Texas?",
+        options: [
+          "18 years old",
+          "19 years old",
+          "20 years old",
+          "21 years old"
+        ],
+        answer: 0,
+        explanation: "Applicants for a Texas insurance agent license must be at least 18 years old."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "An individual whose Texas insurance license has been expired for 90 days or less may renew the license by:",
+        options: [
+          "Retaking the state licensing examination",
+          "Submitting a renewal application, satisfying CE requirements, and paying the renewal fee plus a 50% penalty fee",
+          "Petitioning the Texas Attorney General",
+          "Completing a 40-hour pre-licensing course"
+        ],
+        answer: 1,
+        explanation: "If expired for 90 days or less, a Texas license can be renewed by filing renewal forms, completing CE, and paying a 50% penalty fee."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "If an agent's license has been revoked by TDI, what is the minimum waiting period before the individual may reapply for an insurance license?",
+        options: [
+          "1 year",
+          "2 years",
+          "5 years",
+          "10 years"
+        ],
+        answer: 2,
+        explanation: "An individual whose license has been revoked in Texas must wait at least 5 years from the date of revocation before reapplying."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Which of the following actions constitutes Controlled Business under Texas law?",
+        options: [
+          "Selling policies exclusively to general corporate accounts",
+          "Writing insurance primarily on the agent's own life, family members, or business associates",
+          "Placing insurance with an unauthorized excess-and-surplus carrier",
+          "Operating without a physical storefront"
+        ],
+        answer: 1,
+        explanation: "Controlled Business refers to policies written on the agent's own life, family, or business associates. A Texas license cannot be used primarily for controlled business."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under Texas Insurance Code, what is the definition of Twisting?",
+        options: [
+          "Offering a cash bribe to an applicant",
+          "Making fraudulent or misleading comparisons of policies to induce a policyowner to drop or surrender an existing policy and purchase another",
+          "Charging different rates to individuals of the same actuarial risk class",
+          "Collecting premiums without an active appointment"
+        ],
+        answer: 1,
+        explanation: "Twisting is the unfair practice of making misleading comparisons to persuade a policyowner to surrender an existing policy for a new one."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "In Texas, how many days notice must an insurer give a policyowner before canceling an individual health policy for non-payment of premium?",
+        options: [
+          "5 days",
+          "10 days",
+          "30 days",
+          "45 days"
+        ],
+        answer: 1,
+        explanation: "Under Texas regulations, insurers must provide at least 10 days written notice before canceling coverage for unpaid premiums."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under the Texas Life and Health Insurance Guaranty Association, what is the maximum coverage protection for Annuity present value cash benefits?",
+        options: [
+          "$100,000",
+          "$250,000",
+          "$300,000",
+          "$500,000"
+        ],
+        answer: 1,
+        explanation: "The Texas Guaranty Association provides up to $250,000 in present value annuity cash benefits per contract owner."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "An agent who collects premiums holds those funds in what legal capacity?",
+        options: [
+          "Creditor",
+          "Fiduciary",
+          "Beneficiary",
+          "Bailee"
+        ],
+        answer: 1,
+        explanation: "Insurance agents hold collected client premiums in a fiduciary capacity, meaning funds cannot be commingled with personal accounts."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under Texas Insurance Code, an insurer that receives a clean, complete claim from an HMO or Preferred Provider must pay the electronic claim within:",
+        options: [
+          "15 days",
+          "30 calendar days",
+          "45 calendar days",
+          "60 calendar days"
+        ],
+        answer: 1,
+        explanation: "Under Texas clean claim regulations, an electronic claim from a provider must be paid within 30 calendar days of receipt."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under Texas law, which of the following is an example of illegal Defamation?",
+        options: [
+          "Recommending a replacement policy with lower internal charges",
+          "Circulating false or derogatory statements about an insurer's financial stability",
+          "Disclosing policy exclusions in writing",
+          "Submitting an application without collecting premium"
+        ],
+        answer: 1,
+        explanation: "Defamation is maliciously circulating false or derogatory statements intended to injure an insurer or agent's professional standing."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "What is the maximum fine that TDI may assess against an agent for violating an order or statute if willful misconduct is established?",
+        options: [
+          "$1,000 per violation",
+          "$5,000 per violation",
+          "$25,000 per violation",
+          "$100,000 per violation"
+        ],
+        answer: 2,
+        explanation: "TDI can levy administrative penalties up to $25,000 per violation per day for willful noncompliance."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "In Texas, how many hours of Continuing Education must be completed specifically in Ethics/Consumer Protection every 2 years?",
+        options: [
+          "1 hour",
+          "2 hours",
+          "3 hours",
+          "5 hours"
+        ],
+        answer: 2,
+        explanation: "Texas agents must complete at least 3 hours in Ethics/Consumer Protection courses as part of their 24 total CE hours."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under Texas rules, what percentage of the total 24 hours of Continuing Education must be completed in a classroom or classroom-equivalent format?",
+        options: [
+          "25%",
+          "50% (at least 12 hours)",
+          "75%",
+          "100%"
+        ],
+        answer: 1,
+        explanation: "At least 50% (12 hours) of required Texas CE must be completed in classroom or classroom-equivalent settings."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "How long is a Texas temporary insurance license valid?",
+        options: [
+          "90 days",
+          "180 days",
+          "1 year",
+          "2 years"
+        ],
+        answer: 1,
+        explanation: "A Texas temporary agent's license is valid for up to 180 days and cannot be renewed."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under Texas Replacement regulations, what must the agent deliver to the applicant when replacing an existing life insurance contract?",
+        options: [
+          "A copy of the Texas Insurance Code",
+          "The 'Notice Regarding Replacement of Life Insurance or Annuity' signed by both agent and applicant",
+          "A $100 inspection voucher",
+          "A waiver of incontestability"
+        ],
+        answer: 1,
+        explanation: "When replacing life insurance, the agent must present the state-mandated Notice Regarding Replacement signed by both the producer and applicant."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "When replacing life insurance, the replacing insurer must notify the existing insurer within how many business days of receiving the application?",
+        options: [
+          "3 business days",
+          "5 business days",
+          "10 business days",
+          "15 business days"
+        ],
+        answer: 1,
+        explanation: "The replacing company must notify the existing insurer within 5 business days of receiving the replacement application."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under Texas law, individual health insurance policies covering hospital medical expenses must provide coverage for chemical dependency (drug and alcohol abuse):",
+        options: [
+          "Only if the insured pays an additional 50% surcharge",
+          "At levels providing reasonable treatment options equivalent to physical illnesses",
+          "Capped at a maximum lifetime benefit of $500",
+          "Only after a 5-year waiting period"
+        ],
+        answer: 1,
+        explanation: "Texas mandates that individual and group health policies provide chemical dependency coverage equivalent to benefits for physical conditions."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "What is the mandatory Free-Look period for an individual purchasing a Long-Term Care (LTC) policy in Texas?",
+        options: [
+          "10 days",
+          "15 days",
+          "20 days",
+          "30 days"
+        ],
+        answer: 3,
+        explanation: "Texas statutes mandate a 30-day Free-Look period for Long-Term Care and Medicare Supplement policies."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "What is the purpose of the Texas Health Insurance Risk Pool historical successor framework (Texas Comfort/Guaranteed Issue safety net)?",
+        options: [
+          "To provide life insurance to convicted felons",
+          "To provide comprehensive health coverage access to uninsurable Texas residents who cannot obtain private health insurance",
+          "To eliminate state sales tax on insurance premiums",
+          "To subsidize employer payrolls"
+        ],
+        answer: 1,
+        explanation: "High-risk pools provide health insurance access to individuals with severe pre-existing medical conditions who are unable to find private coverage."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under Texas prompt payment rules, once an insurer receives all requested items to evaluate a claim, it must notify the claimant of approval or denial within:",
+        options: [
+          "5 business days",
+          "15 business days",
+          "30 calendar days",
+          "45 calendar days"
+        ],
+        answer: 1,
+        explanation: "Insurers must provide written notice of claim acceptance or rejection within 15 business days of receiving all requested forms and items."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "If an insurer in Texas requests an extension of time to decide on a claim, how many additional days may it take if it explains the reasons to the claimant?",
+        options: [
+          "Up to 15 calendar days",
+          "Up to 45 calendar days",
+          "Up to 90 calendar days",
+          "Up to 180 calendar days"
+        ],
+        answer: 1,
+        explanation: "Insurers can take up to an additional 45 calendar days to investigate a claim provided they inform the claimant in writing of the reasons for the delay."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "What is the statutory interest penalty assessed against an insurer that fails to meet Texas prompt-payment deadlines on a covered claim?",
+        options: [
+          "6% per annum",
+          "12% per annum",
+          "18% per annum plus attorney fees",
+          "24% per annum"
+        ],
+        answer: 2,
+        explanation: "Under Texas prompt pay laws, insurers that wrongfully delay claims must pay the claim plus 18% per annum statutory interest and reasonable attorney fees."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "An insurer that is incorporated under the laws of Texas is classified as:",
+        options: [
+          "A Domestic insurer",
+          "A Foreign insurer",
+          "An Alien insurer",
+          "An Unauthorized insurer"
+        ],
+        answer: 0,
+        explanation: "An insurer chartered and formed under the laws of Texas is a Domestic insurer in Texas."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under Texas law, an insurance company formed in Canada and licensed to do business in Dallas is classified as:",
+        options: [
+          "Domestic",
+          "Foreign",
+          "Alien",
+          "Non-admitted"
+        ],
+        answer: 2,
+        explanation: "Insurers chartered outside the United States are classified under state law as Alien insurers."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Which of the following is considered an unfair practice under the Texas Unfair Claims Settlement Practices Act?",
+        options: [
+          "Requesting a claimant submit a sworn proof of loss",
+          "Failing to settle a claim promptly when liability has become reasonably clear",
+          "Requiring medical records before approving major surgery claims",
+          "Denying a claim for an excluded condition clearly listed in the policy"
+        ],
+        answer: 1,
+        explanation: "Failing to attempt in good faith to effectuate prompt, fair, and equitable claim settlements where liability is reasonably clear is an unfair settlement practice."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "Under Texas law, an agent who issues a life insurance illustration must:",
+        options: [
+          "Guarantee that projected interest rates will never decrease",
+          "Provide a basic illustration that conforms to TDI standards and ensure it is not represented as guaranteed",
+          "Require the policyowner to notarize every page",
+          "Submit the illustration to TDI 30 days prior to use"
+        ],
+        answer: 1,
+        explanation: "Life insurance illustrations must strictly adhere to TDI disclosure rules and clearly differentiate guaranteed from non-guaranteed values."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "In Texas, how long must an insurance company retain records of all published advertisements and marketing materials?",
+        options: [
+          "1 year",
+          "2 years",
+          "3 years",
+          "4 years"
+        ],
+        answer: 3,
+        explanation: "Insurers must maintain records of all advertising and promotional materials for at least 4 years or until the next examination by TDI."
+      },
+      {
+        category: "Texas Statutes, Rules & Licensing Regulations",
+        question: "If an insurance producer changes their legal name, business address, or email address, they must notify the Texas Department of Insurance within:",
+        options: [
+          "10 days",
+          "20 days",
+          "30 days",
+          "60 days"
+        ],
+        answer: 2,
+        explanation: "Producers must notify the Texas Department of Insurance within 30 days of any change to their name, business address, residence, or email."
+      }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let answeredCount = 0;
+    let hasAnsweredCurrent = false;
+
+    const quizCard = document.getElementById("quiz-card");
+    const resultScreen = document.getElementById("result-screen");
+    const categoryBadge = document.getElementById("category-badge");
+    const questionText = document.getElementById("question-text");
+    const optionsContainer = document.getElementById("options-container");
+    const explanationBox = document.getElementById("explanation-box");
+    const feedbackHeading = document.getElementById("feedback-heading");
+    const explanationText = document.getElementById("explanation-text");
+    const nextBtn = document.getElementById("next-btn");
+    const questionProgress = document.getElementById("question-progress");
+    const liveScore = document.getElementById("live-score");
+    const progressBar = document.getElementById("progress-bar");
+
+    function loadQuestion() {
+      hasAnsweredCurrent = false;
+      nextBtn.style.display = "none";
+      explanationBox.style.display = "none";
+      explanationBox.className = "explanation-box";
+
+      const currentQ = questions[currentIndex];
+      categoryBadge.textContent = currentQ.category;
+      questionText.textContent = `${currentIndex + 1}. ${currentQ.question}`;
+      
+      questionProgress.textContent = `Question ${currentIndex + 1} of ${questions.length}`;
+      progressBar.style.width = `${((currentIndex) / questions.length) * 100}%`;
+
+      optionsContainer.innerHTML = "";
+      const optionLetters = ["A", "B", "C", "D"];
+
+      currentQ.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `<span class="option-key">${optionLetters[idx]})</span><span>${opt}</span>`;
+        btn.onclick = () => selectOption(idx);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function selectOption(selectedIndex) {
+      if (hasAnsweredCurrent) return;
+      hasAnsweredCurrent = true;
+      answeredCount++;
+
+      const currentQ = questions[currentIndex];
+      const buttons = optionsContainer.getElementsByClassName("option-btn");
+      const isCorrect = (selectedIndex === currentQ.answer);
+
+      if (isCorrect) {
+        score++;
+        buttons[selectedIndex].classList.add("selected-correct");
+        feedbackHeading.textContent = "Correct!";
+        explanationBox.classList.add("correct");
+      } else {
+        buttons[selectedIndex].classList.add("selected-incorrect");
+        buttons[currentQ.answer].classList.add("show-correct");
+        feedbackHeading.textContent = "Incorrect";
+        explanationBox.classList.add("incorrect");
+      }
+
+      Array.from(buttons).forEach(btn => btn.disabled = true);
+
+      explanationText.textContent = currentQ.explanation;
+      explanationBox.style.display = "block";
+
+      const percentage = Math.round((score / answeredCount) * 100);
+      liveScore.textContent = `Score: ${score}/${answeredCount} (${percentage}%)`;
+
+      if (currentIndex === questions.length - 1) {
+        nextBtn.textContent = "View Final Results";
+      } else {
+        nextBtn.textContent = "Next Question →";
+      }
+      nextBtn.style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+      if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      quizCard.style.display = "none";
+      resultScreen.style.display = "block";
+      progressBar.style.width = "100%";
+
+      const finalPercentage = Math.round((score / questions.length) * 100);
+      const scoreCircle = document.getElementById("score-circle");
+      const resultStatus = document.getElementById("result-status");
+      const resultDetails = document.getElementById("result-details");
+
+      scoreCircle.textContent = `${finalPercentage}%`;
+
+      if (finalPercentage >= 70) {
+        scoreCircle.className = "score-circle score-pass";
+        resultStatus.textContent = "Exam Passed!";
+        resultStatus.style.color = "#34d399";
+        resultDetails.textContent = `Congratulations! You answered ${score} out of ${questions.length} questions correctly (${finalPercentage}%). You have exceeded the 70% scaled benchmark required by Pearson VUE and the Texas Department of Insurance.`;
+      } else {
+        scoreCircle.className = "score-circle score-fail";
+        resultStatus.textContent = "Needs Review";
+        resultStatus.style.color = "#f87171";
+        resultDetails.textContent = `You scored ${score} out of ${questions.length} (${finalPercentage}%). The state of Texas requires at least 70% to pass. Focus your review on the Texas Prompt Payment rules and mandatory policy provisions, then retake the exam.`;
+      }
+    }
+
+    function restartQuiz() {
+      currentIndex = 0;
+      score = 0;
+      answeredCount = 0;
+      liveScore.textContent = "Score: 0/0 (0%)";
+      resultScreen.style.display = "none";
+      quizCard.style.display = "block";
+      loadQuestion();
+    }
+
+    window.onload = loadQuestion;
+  </script>
+</body>
+</html>
