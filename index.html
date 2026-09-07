@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Texas Life, Accident, Health & HMO Full Exam Simulator (145 Questions)</title>
+  <title>Texas Life, Health & Annuity Exam - 20-Question Mastery Mode</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -21,6 +21,7 @@
       --incorrect-border: #ef4444;
       --incorrect-text: #fecaca;
       --accent: #60a5fa;
+      --gold: #f59e0b;
     }
 
     * {
@@ -33,7 +34,7 @@
     body {
       background-color: var(--bg-color);
       color: var(--text-main);
-      padding: 24px 16px;
+      padding: 16px 12px;
       display: flex;
       justify-content: center;
       min-height: 100vh;
@@ -44,34 +45,55 @@
       max-width: 820px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
-    /* Header & Tracking Bar */
     header {
       background: var(--card-bg);
       border-radius: 12px;
-      padding: 20px 24px;
+      padding: 16px 18px;
       border: 1px solid var(--border-color);
     }
 
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
     h1 {
-      font-size: 1.35rem;
+      font-size: 1.15rem;
       color: var(--accent);
-      margin-bottom: 10px;
+    }
+
+    .set-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    select {
+      background: var(--card-inner);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
     }
 
     .meta-bar {
       display: flex;
       justify-content: space-between;
-      font-size: 0.92rem;
+      font-size: 0.85rem;
       color: var(--text-sub);
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .progress-container {
       width: 100%;
-      height: 10px;
+      height: 8px;
       background: #0f172a;
       border-radius: 999px;
       overflow: hidden;
@@ -85,48 +107,46 @@
       transition: width 0.3s ease;
     }
 
-    /* Main Question Card */
     .card {
       background: var(--card-bg);
       border-radius: 12px;
-      padding: 28px;
+      padding: 22px 18px;
       border: 1px solid var(--border-color);
     }
 
     .category-badge {
       display: inline-block;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--accent);
       background: rgba(96, 165, 250, 0.12);
       border: 1px solid rgba(96, 165, 250, 0.3);
-      padding: 4px 10px;
+      padding: 4px 8px;
       border-radius: 6px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .question-title {
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       font-weight: 600;
-      line-height: 1.55;
-      margin-bottom: 22px;
+      line-height: 1.5;
+      margin-bottom: 18px;
     }
 
-    /* Options List */
     .options-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .option-btn {
       width: 100%;
       text-align: left;
-      padding: 14px 18px;
-      font-size: 0.98rem;
-      line-height: 1.45;
+      padding: 13px 15px;
+      font-size: 0.94rem;
+      line-height: 1.4;
       background: var(--card-inner);
       border: 1px solid var(--border-color);
       border-radius: 8px;
@@ -135,7 +155,7 @@
       transition: all 0.2s ease;
       display: flex;
       align-items: flex-start;
-      gap: 12px;
+      gap: 10px;
     }
 
     .option-btn:hover:not(:disabled) {
@@ -149,11 +169,10 @@
 
     .option-key {
       font-weight: 700;
-      min-width: 22px;
+      min-width: 20px;
       color: var(--accent);
     }
 
-    /* Result State Styling */
     .option-btn.selected-correct {
       background-color: var(--correct-bg) !important;
       border-color: var(--correct-border) !important;
@@ -174,14 +193,13 @@
       color: var(--correct-text) !important;
     }
 
-    /* Explanation Area */
     .explanation-box {
       display: none;
-      margin-top: 22px;
-      padding: 18px 20px;
+      margin-top: 18px;
+      padding: 14px 16px;
       border-radius: 8px;
-      font-size: 0.95rem;
-      line-height: 1.55;
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
 
     .explanation-box.correct {
@@ -198,53 +216,61 @@
 
     .explanation-box strong {
       display: block;
-      margin-bottom: 6px;
-      font-size: 1.05rem;
+      margin-bottom: 4px;
+      font-size: 0.98rem;
     }
 
-    /* Bottom Button Controls */
     .controls {
       display: flex;
       justify-content: flex-end;
-      margin-top: 24px;
+      margin-top: 18px;
     }
 
-    .next-btn {
-      padding: 12px 28px;
-      font-size: 1rem;
+    .action-btn {
+      padding: 11px 22px;
+      font-size: 0.95rem;
       font-weight: 600;
       color: #fff;
       background: var(--primary);
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      display: none;
+      display: inline-block;
       transition: background 0.2s ease;
     }
 
-    .next-btn:hover {
+    .action-btn:hover {
       background: var(--primary-hover);
     }
 
-    /* Final Result Screen */
-    .result-screen {
+    .btn-secondary {
+      background: var(--card-inner);
+      border: 1px solid var(--border-color);
+      margin-right: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    /* Set Mastery Card */
+    .mastery-screen {
       display: none;
       text-align: center;
-      padding: 40px 24px;
+      padding: 36px 18px;
     }
 
     .score-circle {
-      width: 140px;
-      height: 140px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
-      margin: 0 auto 22px;
+      margin: 0 auto 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 800;
       color: #fff;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     }
 
     .score-pass {
@@ -257,35 +283,26 @@
       border: 4px solid #ef4444;
     }
 
-    .result-status {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 10px;
+    .mastery-title {
+      font-size: 1.4rem;
+      margin-bottom: 8px;
     }
 
-    .result-details {
+    .mastery-desc {
       color: var(--text-sub);
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       line-height: 1.6;
-      margin-bottom: 28px;
-      max-width: 600px;
+      margin-bottom: 24px;
+      max-width: 500px;
       margin-left: auto;
       margin-right: auto;
     }
 
-    .restart-btn {
-      padding: 12px 32px;
-      font-size: 1rem;
-      font-weight: 600;
-      color: #fff;
-      background: var(--primary);
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .restart-btn:hover {
-      background: var(--primary-hover);
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
   </style>
 </head>
@@ -293,10 +310,25 @@
 
   <div class="container">
     <header>
-      <h1>Texas Life, Health & Annuity Exam Prep (145 Questions)</h1>
+      <div class="header-top">
+        <h1>Texas Insurance Exam Prep</h1>
+        <div class="set-select-wrap">
+          <label for="set-selector" style="font-size:0.8rem; color:var(--text-sub);">Active Set:</label>
+          <select id="set-selector" onchange="changeSet(this.value)">
+            <option value="0">Set 1 (Q 1–20)</option>
+            <option value="1">Set 2 (Q 21–40)</option>
+            <option value="2">Set 3 (Q 41–60)</option>
+            <option value="3">Set 4 (Q 61–80)</option>
+            <option value="4">Set 5 (Q 81–100)</option>
+            <option value="5">Set 6 (Q 101–120)</option>
+            <option value="6">Set 7 (Q 121–140)</option>
+            <option value="7">Set 8 (Q 141–145)</option>
+          </select>
+        </div>
+      </div>
       <div class="meta-bar">
-        <span id="question-progress">Question 1 of 145</span>
-        <span id="live-score">Score: 0/0 (0%)</span>
+        <span id="question-progress">Question 1 of 20</span>
+        <span id="live-score">Set Score: 0/0 (0%)</span>
       </div>
       <div class="progress-container">
         <div class="progress-fill" id="progress-bar"></div>
@@ -318,22 +350,25 @@
       </div>
 
       <div class="controls">
-        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question &rarr;</button>
+        <button class="action-btn" id="next-btn" style="display:none;" onclick="nextQuestion()">Next Question &rarr;</button>
       </div>
     </main>
 
-    <!-- Results Screen -->
-    <section class="card result-screen" id="result-screen">
+    <!-- Set Mastery & Review Screen -->
+    <section class="card mastery-screen" id="mastery-screen">
       <div class="score-circle" id="score-circle">0%</div>
-      <h2 class="result-status" id="result-status">Exam Results</h2>
-      <p class="result-details" id="result-details"></p>
-      <button class="restart-btn" onclick="restartQuiz()">Retake Exam (Restart)</button>
+      <h2 class="mastery-title" id="mastery-title">Set Complete</h2>
+      <p class="mastery-desc" id="mastery-desc"></p>
+      <div class="btn-group">
+        <button class="action-btn btn-secondary" onclick="retestActiveSet()">↺ Rearrange & Retest This Set</button>
+        <button class="action-btn" id="next-set-btn" onclick="advanceNextSet()">Next Set &rarr;</button>
+      </div>
     </section>
   </div>
 
   <script>
-    const questions = [
-      // Questions 1 - 10: Contract Law & General Concepts
+    const masterBank = [
+      // Questions 1-10
       {
         category: "General Insurance Concepts & Contract Law",
         question: "An applicant applies for a life insurance policy without submitting the initial premium. The producer delivers the policy three weeks later. What must the producer collect at the time of delivery before coverage becomes legally effective?",
@@ -356,7 +391,7 @@
           "By dividing the liability equally between both parties"
         ],
         answer: 1,
-        explanation: "Contracts of adhesion are drafted by one party (the insurer) without negotiation. Ambiguous language is strictly interpreted in favor of the insured."
+        explanation: "Contracts of adhesion are drafted by one party without negotiation. Ambiguous language is strictly interpreted in favor of the insured."
       },
       {
         category: "General Insurance Concepts & Contract Law",
@@ -404,7 +439,7 @@
           "Unilateral promises"
         ],
         answer: 1,
-        explanation: "Under Texas Insurance Code, statements on an application are representations (statements believed to be true to the best of knowledge), not warranties (guaranteed absolute truths)."
+        explanation: "Under Texas Insurance Code, statements on an application are representations (statements believed to be true to the best of knowledge), not warranties."
       },
       {
         category: "General Insurance Concepts & Contract Law",
@@ -440,7 +475,7 @@
           "The insurable interest acknowledgment"
         ],
         answer: 1,
-        explanation: "Consideration is the value given in exchange. The applicant provides the completed application plus the premium; the insurer provides the promise to pay covered losses."
+        explanation: "Consideration is the value given in exchange. The applicant provides the completed application plus premium; the insurer provides the promise to pay covered claims."
       },
       {
         category: "General Insurance Concepts & Contract Law",
@@ -455,7 +490,7 @@
         explanation: "Under a conditional receipt, coverage is effective as of the date of application or medical exam, provided the applicant was insurable under standard guidelines on that date."
       },
 
-      // Questions 11 - 25: Life Policies & Riders
+      // Questions 11-20
       {
         category: "Life Insurance Policies & Riders",
         question: "A 30-year-old client wants permanent life insurance but can only afford lower premiums now, expecting their salary to double in 5 years. Which policy fits best?",
@@ -514,7 +549,7 @@
           "The cash surrender value only"
         ],
         answer: 1,
-        explanation: "ADB riders pay an additional benefit only if death is the direct result of an external accident. Death from natural medical causes (like a heart attack) pays only the base face amount."
+        explanation: "ADB riders pay an additional benefit only if death is the direct result of an external accident. Natural medical causes (like a heart attack) pay only the base face amount."
       },
       {
         category: "Life Insurance Policies & Riders",
@@ -550,7 +585,7 @@
           "Equal to the accumulated cash value every five years"
         ],
         answer: 0,
-        explanation: "GIR allows the insured to purchase stated increments of permanent coverage at specific intervals (e.g., ages 25, 28, 31, 34) or life events without medical underwriting."
+        explanation: "GIR allows the insured to purchase stated increments of permanent coverage at specific intervals or milestones without medical underwriting."
       },
       {
         category: "Life Insurance Policies & Riders",
@@ -576,6 +611,8 @@
         answer: 1,
         explanation: "The Grace Period (typically 30 or 31 days) maintains policy coverage past the due date. If death occurs during this window, unpaid premiums are deducted from the payout."
       },
+
+      // Questions 21-40
       {
         category: "Life Insurance Policies & Riders",
         question: "An insured borrows $15,000 against their whole life cash value. If the insured dies before repaying the loan, what is paid to the beneficiary?",
@@ -598,7 +635,7 @@
           "Paid-Up Additions"
         ],
         answer: 3,
-        explanation: "Paid-Up Additions is a Dividend Option. The three standard nonforfeiture options are Cash Surrender, Reduced Paid-Up, and Extended Term."
+        explanation: "Paid-Up Additions is a Dividend Option. The three statutory nonforfeiture options are Cash Surrender, Reduced Paid-Up, and Extended Term."
       },
       {
         category: "Life Insurance Policies & Riders",
@@ -636,8 +673,6 @@
         answer: 2,
         explanation: "The Misstatement of Age and Gender provision is never restricted by the incontestable clause; the insurer adjusts benefits to match what the premiums would have bought at the true age."
       },
-
-      // Questions 26 - 35: Annuities & Retirement Concepts
       {
         category: "Annuities & Retirement Concepts",
         question: "During the accumulation phase of a non-qualified deferred annuity, how are investment earnings taxed?",
@@ -684,7 +719,7 @@
           "Only the 10% penalty applies"
         ],
         answer: 1,
-        explanation: "Non-qualified annuity withdrawals follow LIFO (Last-In, First-Out) taxation; earnings come out first and are taxed as ordinary income. Withdrawals before age 59½ incur an additional 10% IRS penalty."
+        explanation: "Non-qualified annuity withdrawals follow LIFO taxation; earnings come out first and are taxed as ordinary income. Withdrawals before age 59½ incur an additional 10% IRS penalty."
       },
       {
         category: "Annuities & Retirement Concepts",
@@ -758,8 +793,6 @@
         answer: 1,
         explanation: "Qualified plans are funded with pre-tax dollars. Both principal and accumulated gains are taxed as ordinary income upon distribution."
       },
-
-      // Questions 36 - 50: Health, Accident & Senior Products
       {
         category: "Health, Accident, Disability & Senior Products",
         question: "Under the Own-Occupation definition of total disability, an insured qualifies for benefits if they:",
@@ -820,6 +853,8 @@
         answer: 0,
         explanation: "Because the employer deducted the premium payments as a business expense, any disability benefits received by the employee are fully taxable as income."
       },
+
+      // Questions 41-60
       {
         category: "Health, Accident, Disability & Senior Products",
         question: "Which part of Medicare provides coverage for inpatient hospitalization, skilled nursing care, hospice, and home health care?",
@@ -842,7 +877,7 @@
           "6 out of 6"
         ],
         answer: 1,
-        explanation: "Tax-qualified LTC policies require that an individual be unable to perform at least 2 of 6 standard ADLs (eating, bathing, dressing, toileting, transferring, continence) for at least 90 days."
+        explanation: "Tax-qualified LTC policies require that an individual be unable to perform at least 2 of 6 standard ADLs for at least 90 days."
       },
       {
         category: "Health, Accident, Disability & Senior Products",
@@ -854,7 +889,7 @@
           "HMOs do not cover preventive care"
         ],
         answer: 1,
-        explanation: "HMOs rely on network physicians and Primary Care Physicians (gatekeepers) for specialist referrals. PPOs offer in- and out-of-network access without gatekeeper referrals."
+        explanation: "HMOs rely on network physicians and Primary Care Physicians for specialist referrals. PPOs offer in- and out-of-network access without gatekeeper referrals."
       },
       {
         category: "Health, Accident, Disability & Senior Products",
@@ -940,8 +975,6 @@
         answer: 0,
         explanation: "Reinstated policies cover accidental injuries immediately, but impose a 10-day waiting period on illnesses to protect against adverse selection."
       },
-
-      // Questions 51 - 65: Texas Statutes & Rules Part 1
       {
         category: "Texas Statutes, Rules & Licensing Regulations",
         question: "The Texas Commissioner of Insurance is appointed by:",
@@ -1062,6 +1095,8 @@
         answer: 2,
         explanation: "Under Texas Insurance Code, an insurer that fails to comply with prompt payment deadlines is liable for the claim plus 18% per annum statutory interest and reasonable attorney fees."
       },
+
+      // Questions 61-80
       {
         category: "Texas Statutes, Rules & Licensing Regulations",
         question: "Offering a prospective client a $200 gift card, a discount on premiums, or a portion of the agent's commission as an incentive to buy insurance is:",
@@ -1122,8 +1157,6 @@
         answer: 2,
         explanation: "The Texas Life and Health Insurance Guaranty Association protects up to $300,000 in life insurance death benefits per individual if an insurer becomes insolvent."
       },
-
-      // Questions 66 - 90: Life Concepts, Settlement, Taxation & Underwriting
       {
         category: "Life Insurance Concepts & Contract Law",
         question: "When an insured dies, the beneficiary elects to receive the death benefit in equal monthly installments for 20 years. Which settlement option was chosen?",
@@ -1304,6 +1337,8 @@
         answer: 1,
         explanation: "Indexed Universal Life contracts feature a minimum interest rate floor (usually 0%), protecting cash value from losing principal during market drops."
       },
+
+      // Questions 81-100
       {
         category: "Life Insurance Policies & Riders",
         question: "A policyowner names their spouse as Primary Beneficiary and child as Contingent Beneficiary. Both die together in an auto accident with no survival proof. How are proceeds paid?",
@@ -1424,8 +1459,6 @@
         answer: 1,
         explanation: "Under IRS Section 79, employer-provided group life over $50,000 generates taxable imputed income to the employee based on IRS Table I rates."
       },
-
-      // Questions 91 - 115: Health, Disability, Senior & Managed Care
       {
         category: "Health, Accident, Disability & Senior Products",
         question: "Under a Residual Disability rider, how are benefits determined when an insured returns to work on a part-time basis following a disabling event?",
@@ -1546,6 +1579,8 @@
         answer: 2,
         explanation: "The ACA requires plans providing dependent coverage to cover adult children up to age 26, regardless of financial, marital, or student status."
       },
+
+      // Questions 101-120
       {
         category: "Health, Accident, Disability & Senior Products",
         question: "Which of the following is considered an Essential Health Benefit (EHB) under the ACA?",
@@ -1726,8 +1761,6 @@
         answer: 1,
         explanation: "Impairment riders exclude coverage for specific conditions or body parts, allowing otherwise uninsurable applicants to obtain protection for other risks."
       },
-
-      // Questions 116 - 145: Texas Statutes, Rules & Licensing Regulations Part 2
       {
         category: "Texas Statutes, Rules & Licensing Regulations",
         question: "Which entity is responsible for administering and enforcing insurance laws in the State of Texas?",
@@ -1788,6 +1821,8 @@
         answer: 2,
         explanation: "An individual whose license has been revoked in Texas must wait at least 5 years from the date of revocation before reapplying."
       },
+
+      // Questions 121-140
       {
         category: "Texas Statutes, Rules & Licensing Regulations",
         question: "Which of the following actions constitutes Controlled Business under Texas law?",
@@ -2028,6 +2063,8 @@
         answer: 0,
         explanation: "An insurer chartered and formed under the laws of Texas is a Domestic insurer in Texas."
       },
+
+      // Questions 141-145
       {
         category: "Texas Statutes, Rules & Licensing Regulations",
         question: "Under Texas law, an insurance company formed in Canada and licensed to do business in Dallas is classified as:",
@@ -2090,13 +2127,17 @@
       }
     ];
 
-    let currentIndex = 0;
+    // State Variables
+    let currentSetIndex = 0;
+    let setQuestions = [];
+    let currentInSetIndex = 0;
     let score = 0;
-    let answeredCount = 0;
+    let answeredInSet = 0;
     let hasAnsweredCurrent = false;
 
+    // Elements
     const quizCard = document.getElementById("quiz-card");
-    const resultScreen = document.getElementById("result-screen");
+    const masteryScreen = document.getElementById("mastery-screen");
     const categoryBadge = document.getElementById("category-badge");
     const questionText = document.getElementById("question-text");
     const optionsContainer = document.getElementById("options-container");
@@ -2107,27 +2148,113 @@
     const questionProgress = document.getElementById("question-progress");
     const liveScore = document.getElementById("live-score");
     const progressBar = document.getElementById("progress-bar");
+    const setSelector = document.getElementById("set-selector");
 
-    function loadQuestion() {
+    // Shuffle Array Utility
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    // Shuffle Options within a Question
+    function shuffleOptions(q) {
+      const originalOptions = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.answer }));
+      const shuffled = shuffleArray(originalOptions);
+      return {
+        ...q,
+        options: shuffled.map(o => o.text),
+        answer: shuffled.findIndex(o => o.isCorrect)
+      };
+    }
+
+    // Load or Slice the Active 20-Question Set and Scramble It
+    function loadSet(setIdx, randomize = true) {
+      currentSetIndex = parseInt(setIdx);
+      setSelector.value = currentSetIndex;
+
+      const start = currentSetIndex * 20;
+      const end = Math.min(start + 20, masterBank.length);
+      const rawSlice = masterBank.slice(start, end);
+
+      if (randomize) {
+        // Scramble strictly within this 20-question set
+        setQuestions = shuffleArray(rawSlice).map(q => shuffleOptions(q));
+      } else {
+        setQuestions = rawSlice.map(q => shuffleOptions(q));
+      }
+
+      currentInSetIndex = 0;
+      score = 0;
+      answeredInSet = 0;
+
+      saveState();
+      renderQuestion();
+    }
+
+    function saveState() {
+      const state = {
+        currentSetIndex,
+        setQuestions,
+        currentInSetIndex,
+        score,
+        answeredInSet
+      };
+      localStorage.setItem("tx_set_mastery_state", JSON.stringify(state));
+    }
+
+    function init() {
+      const saved = localStorage.getItem("tx_set_mastery_state");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          currentSetIndex = parsed.currentSetIndex;
+          setQuestions = parsed.setQuestions;
+          currentInSetIndex = parsed.currentInSetIndex;
+          score = parsed.score;
+          answeredInSet = parsed.answeredInSet;
+          setSelector.value = currentSetIndex;
+          renderQuestion();
+          return;
+        } catch(e) {
+          console.error(e);
+        }
+      }
+      loadSet(0, true);
+    }
+
+    function changeSet(newIndex) {
+      quizCard.style.display = "block";
+      masteryScreen.style.display = "none";
+      loadSet(newIndex, true);
+    }
+
+    function renderQuestion() {
       hasAnsweredCurrent = false;
       nextBtn.style.display = "none";
       explanationBox.style.display = "none";
       explanationBox.className = "explanation-box";
 
-      const currentQ = questions[currentIndex];
+      const currentQ = setQuestions[currentInSetIndex];
       categoryBadge.textContent = currentQ.category;
-      questionText.textContent = `${currentIndex + 1}. ${currentQ.question}`;
-      
-      questionProgress.textContent = `Question ${currentIndex + 1} of ${questions.length}`;
-      progressBar.style.width = `${((currentIndex) / questions.length) * 100}%`;
+      questionText.textContent = `${currentInSetIndex + 1}. ${currentQ.question}`;
+
+      questionProgress.textContent = `Question ${currentInSetIndex + 1} of ${setQuestions.length}`;
+      progressBar.style.width = `${((currentInSetIndex) / setQuestions.length) * 100}%`;
+
+      const pct = answeredInSet > 0 ? Math.round((score / answeredInSet) * 100) : 0;
+      liveScore.textContent = `Set Score: ${score}/${answeredInSet} (${pct}%)`;
 
       optionsContainer.innerHTML = "";
-      const optionLetters = ["A", "B", "C", "D"];
+      const letters = ["A", "B", "C", "D"];
 
       currentQ.options.forEach((opt, idx) => {
         const btn = document.createElement("button");
         btn.className = "option-btn";
-        btn.innerHTML = `<span class="option-key">${optionLetters[idx]})</span><span>${opt}</span>`;
+        btn.innerHTML = `<span class="option-key">${letters[idx]})</span><span>${opt}</span>`;
         btn.onclick = () => selectOption(idx);
         optionsContainer.appendChild(btn);
       });
@@ -2136,9 +2263,9 @@
     function selectOption(selectedIndex) {
       if (hasAnsweredCurrent) return;
       hasAnsweredCurrent = true;
-      answeredCount++;
+      answeredInSet++;
 
-      const currentQ = questions[currentIndex];
+      const currentQ = setQuestions[currentInSetIndex];
       const buttons = optionsContainer.getElementsByClassName("option-btn");
       const isCorrect = (selectedIndex === currentQ.answer);
 
@@ -2159,11 +2286,13 @@
       explanationText.textContent = currentQ.explanation;
       explanationBox.style.display = "block";
 
-      const percentage = Math.round((score / answeredCount) * 100);
-      liveScore.textContent = `Score: ${score}/${answeredCount} (${percentage}%)`;
+      const pct = Math.round((score / answeredInSet) * 100);
+      liveScore.textContent = `Set Score: ${score}/${answeredInSet} (${pct}%)`;
 
-      if (currentIndex === questions.length - 1) {
-        nextBtn.textContent = "View Final Results";
+      saveState();
+
+      if (currentInSetIndex === setQuestions.length - 1) {
+        nextBtn.textContent = "View Set Results";
       } else {
         nextBtn.textContent = "Next Question →";
       }
@@ -2171,50 +2300,62 @@
     }
 
     function nextQuestion() {
-      if (currentIndex < questions.length - 1) {
-        currentIndex++;
-        loadQuestion();
+      if (currentInSetIndex < setQuestions.length - 1) {
+        currentInSetIndex++;
+        saveState();
+        renderQuestion();
       } else {
-        showResults();
+        showSetSummary();
       }
     }
 
-    function showResults() {
+    function showSetSummary() {
       quizCard.style.display = "none";
-      resultScreen.style.display = "block";
+      masteryScreen.style.display = "block";
       progressBar.style.width = "100%";
 
-      const finalPercentage = Math.round((score / questions.length) * 100);
+      const finalPct = Math.round((score / setQuestions.length) * 100);
       const scoreCircle = document.getElementById("score-circle");
-      const resultStatus = document.getElementById("result-status");
-      const resultDetails = document.getElementById("result-details");
+      const masteryTitle = document.getElementById("mastery-title");
+      const masteryDesc = document.getElementById("mastery-desc");
+      const nextSetBtn = document.getElementById("next-set-btn");
 
-      scoreCircle.textContent = `${finalPercentage}%`;
+      scoreCircle.textContent = `${finalPct}%`;
 
-      if (finalPercentage >= 70) {
+      if (finalPct >= 70) {
         scoreCircle.className = "score-circle score-pass";
-        resultStatus.textContent = "Exam Passed!";
-        resultStatus.style.color = "#34d399";
-        resultDetails.textContent = `Congratulations! You answered ${score} out of ${questions.length} questions correctly (${finalPercentage}%). You have exceeded the 70% scaled benchmark required by Pearson VUE and the Texas Department of Insurance.`;
+        masteryTitle.textContent = `Set ${currentSetIndex + 1} Mastered!`;
+        masteryDesc.innerHTML = `Great work! You scored <strong>${score}/${setQuestions.length} (${finalPct}%)</strong>. You have demonstrated passing competency on this 20-question cluster. You can rearrange and retake it for 100% mastery, or advance to the next set.`;
       } else {
         scoreCircle.className = "score-circle score-fail";
-        resultStatus.textContent = "Needs Review";
-        resultStatus.style.color = "#f87171";
-        resultDetails.textContent = `You scored ${score} out of ${questions.length} (${finalPercentage}%). The state of Texas requires at least 70% to pass. Focus your review on the Texas Prompt Payment rules and mandatory policy provisions, then retake the exam.`;
+        masteryTitle.textContent = `Set ${currentSetIndex + 1} Needs Review`;
+        masteryDesc.innerHTML = `You scored <strong>${score}/${setQuestions.length} (${finalPct}%)</strong>. Click "Rearrange & Retest" to scramble these exact questions in a new order and try again.`;
+      }
+
+      // Hide or show advance button
+      if (currentSetIndex >= 7) {
+        nextSetBtn.style.display = "none";
+      } else {
+        nextSetBtn.style.display = "inline-block";
       }
     }
 
-    function restartQuiz() {
-      currentIndex = 0;
-      score = 0;
-      answeredCount = 0;
-      liveScore.textContent = "Score: 0/0 (0%)";
-      resultScreen.style.display = "none";
+    function retestActiveSet() {
+      masteryScreen.style.display = "none";
       quizCard.style.display = "block";
-      loadQuestion();
+      loadSet(currentSetIndex, true);
     }
 
-    window.onload = loadQuestion;
+    function advanceNextSet() {
+      if (currentSetIndex < 7) {
+        masteryScreen.style.display = "none";
+        quizCard.style.display = "block";
+        loadSet(currentSetIndex + 1, true);
+      }
+    }
+
+    window.onload = init;
   </script>
 </body>
 </html>
+
